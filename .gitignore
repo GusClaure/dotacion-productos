@@ -3,7 +3,6 @@
 /public/storage
 /storage/*.key
 /vendor
-.env
 .env.backup
 .phpunit.result.cache
 docker-compose.override.yml
@@ -15,4 +14,3 @@ yarn-error.log
 /.vscode
 public/argon/vendor
 public/assets/vendor
-storage
