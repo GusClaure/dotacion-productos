@@ -15,3 +15,4 @@ yarn-error.log
 /.vscode
 public/argon/vendor
 public/assets/vendor
+storage
