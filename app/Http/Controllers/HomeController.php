@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,13 +24,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //return redirect('personas.personas');
-        //return view('dashboard');
 
-        $entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
-        $pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();
-        $observado = DB::table('personas')->where(['status' => 'OBSERVADO'])->count();
-
-        return view('personas.personas', ['entregados' => $entregados, 'pendientes' => $pendientes, 'observado' => $observado]);
+        if(Auth::user()->role == 'ADMIN'){
+            
+            $entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
+            $pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();
+            $observado = DB::table('personas')->where(['status' => 'OBSERVADO'])->count();
+            return view('dashboard', ['entregados' => $entregados, 'pendientes' => $pendientes, 'observado' => $observado]);
+        }else{
+            $entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
+            $pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();
+            $observado = DB::table('personas')->where(['status' => 'OBSERVADO'])->count();
+            return view('personas.personas', ['entregados' => $entregados, 'pendientes' => $pendientes, 'observado' => $observado]);
+        } 
     }
 }
