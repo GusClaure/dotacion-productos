@@ -234,8 +234,6 @@ class PersonaController extends Controller{
             $num_cel = trim($request->num_cel);
         }
 
-    
-  
        $ubicacion = $this->utm2ll(trim($request->x_coord),trim($request->y_coord),19,false);
         
         $people = new Persona;

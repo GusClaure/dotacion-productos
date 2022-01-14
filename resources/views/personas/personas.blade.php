@@ -339,8 +339,20 @@
         { "data": "nro_cel..toString()" },
         { "data": "distrito" },
         { "data": "sub_central" },
-        
-        { "data": "status" },
+        {
+            sortable: false,
+            "render": function (data, type, row, meta) {
+                console.log(row);
+                if(row.status == 'PENDIENTE'){
+                    return '<h5 style="color: #700101;">PENDIENTE</h5>';
+                }else if(row.status == 'ENTREGADO'){
+                    return '<h5 style="color: #035e1b;">ENTREGADO</h5>';
+                }else if(row.status == 'OBSERVADO'){
+                    return '<h5 style="color: #e77500;">OBSERVADO</h5>';
+                }
+                
+            }
+        },
         // { "data": "actividad" },
         //{'defaultContent': '<button value="'+"ci"+'">Click!</button>'} //contenido default
         {
