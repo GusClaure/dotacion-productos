@@ -295,7 +295,7 @@ class PersonaController extends Controller{
 		}
 		$zone = floor(($lon + 180.0) / 6) + 1;
 		//compute values
-		$result = LatLonToUTMXY($this->degree2radian($lat),$this->degree2radian($lon),$zone);
+		$result = $this->LatLonToUTMXY($this->degree2radian($lat),$this->degree2radian($lon),$zone);
 		$aboveEquator = false;
 		if($lat >0){
 			$aboveEquator = true;
@@ -318,7 +318,7 @@ class PersonaController extends Controller{
 		return $cmeridian;
 	}
 	function LatLonToUTMXY ($lat, $lon, $zone){
-	        $xy = MapLatLonToXY ($lat, $lon, $this->UTMCentralMeridian($zone));
+	        $xy = $this->MapLatLonToXY ($lat, $lon, $this->UTMCentralMeridian($zone));
 		/* Adjust easting and northing for UTM system. */
 		$UTMScaleFactor = 0.9996;
 	        $xy[0] = $xy[0] * $UTMScaleFactor + 500000.0;
@@ -431,7 +431,7 @@ class PersonaController extends Controller{
             	+ ($N / 6.0 * pow (cos ($phi), 3.0) * $l3coef * pow ($l, 3.0))
             	+ ($N / 120.0 * pow (cos ($phi), 5.0) * $l5coef * pow ($l, 5.0))
             	+ ($N / 5040.0 * pow (cos ($phi), 7.0) * $l7coef * pow ($l, 7.0));
-		$xy[1] = ArcLengthOfMeridian ($phi)
+		$xy[1] = $this->ArcLengthOfMeridian ($phi)
             	+ ($t / 2.0 * $N * pow (cos ($phi), 2.0) * pow ($l, 2.0))
             	+ ($t / 24.0 * $N * pow (cos ($phi), 4.0) * $l4coef * pow ($l, 4.0))
             	+ ($t / 720.0 * $N * pow (cos ($phi), 6.0) * $l6coef * pow ($l, 6.0))

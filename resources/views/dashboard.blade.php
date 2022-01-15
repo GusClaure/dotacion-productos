@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('layouts.headers.cards', ['entregados' => $entregados, 'pendientes' => $pendientes, 'observado' => $observado])
+    @include('layouts.headers.cards', ['data_count' => $data_count])
     
     <div class="container-fluid mt--7">
         <div class="row">
@@ -41,6 +41,15 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
+        
+      
+       
+
     
         @include('layouts.footers.auth')
     </div>
@@ -60,10 +69,32 @@
 const config = {
     type: 'bar',
     data: {
-        labels: ['Maica Sud', 'Maica Chica', 'Maica Arriba', 'Maica central', 'Maica Norte', 'Maica Milenario', 'Maica Kaspichaca', 'Maica San Isidro', 'Maica Quenamari', 'Maica Bolivia'],
+        labels: [
+            'Maica Sud',
+            'Maica Chica',
+            'Maica Arriba',
+            'Maica central',
+            'Maica Norte',
+            'Maica Milenario',
+            'Maica Kaspichaca',
+            'Maica San Isidro',
+            'Maica Quenamari',
+            'Maica Bolivia'
+            ],
         datasets: [{
             label: '# of Votes',
-            data: [158, 194, 34, 54, 24, 34, 90, 640, 130, 102],
+            data: [
+                '{{ $data_count->maica_sud }}',
+                '{{ $data_count->maica_chica }}',
+                '{{ $data_count->maica_arriba }}',
+                '{{ $data_count->maica_central }}',
+                '{{ $data_count->maica_norte }}',
+                '{{ $data_count->maica_milenario }}',
+                '{{ $data_count->maica_kaspichaca }}',
+                '{{ $data_count->maica_san_isidro }}',
+                '{{ $data_count->maica_quenamari }}',
+                '{{ $data_count->maica_bolivia }}',
+            ],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -74,7 +105,7 @@ const config = {
                 'rgba(234, 237, 237, 0.2)',
                 'rgba(212, 172, 13, 0.2)',
                 'rgba(135, 54, 0, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
                 
             ],
             borderColor: [
@@ -87,7 +118,7 @@ const config = {
                 'rgba(234, 237, 237, 1)',
                 'rgba(212, 172, 13, 1)',
                 'rgba(135, 54, 0, 1)',
-                'rgba(255, 159, 64, 1)',
+                'rgba(255, 159, 64, 1)'
                 
             ],
             borderWidth: 1
