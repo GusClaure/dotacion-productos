@@ -27,8 +27,12 @@ class HomeController extends Controller
     {
 
         if(Auth::user()->role == 'ADMIN'){
-
-            return view('dashboard', ['data_count' => Persona::getAllCountData()]);
+           
+            //dd(Persona::getAllPersonWith('Maica Sud', 'ENTREGADO'));
+            return view('dashboard', [
+                'data_count' => Persona::getAllCountData(),
+                'data_persons' => Persona::getAllPersonWith('Maica Sud', 'ENTREGADO')
+            ]);
         }else{
             // $entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
             // $pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();

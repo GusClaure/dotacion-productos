@@ -62,4 +62,9 @@ class Persona extends Model
                     );
         return $data[0];
     }
+
+
+    public static function getAllPersonWith($sindicato, $status){
+       return Persona::where(['sindicato' => $sindicato, 'status' => $status])->get();
+    }
 }
