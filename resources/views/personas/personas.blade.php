@@ -2,7 +2,7 @@
 @section('content')
 
  
-    @include('layouts.headers.cards', ['entregados' => $entregados, 'pendientes' => $pendientes, 'observado' => $observado])
+    @include('layouts.headers.cards', ['data_count' => $data_count])
 
        <!-- Page content -->
        <div class="container-fluid mt--7">
@@ -158,28 +158,25 @@
 @endsection
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/dataTables.buttons.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/jszip.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/buttons.html5.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/pdfmake.min.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/vfs_fonts.js"></script>
+    <script src="{{ asset('libreries') }}/datatable-boostrap/js/dataTables.responsive.min.js"></script>
 
-    
-
-    <script src="/libreries/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
-    <script src="/libreries/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
-    <script src="/libreries/datatable-boostrap/js/jquery.dataTables.min.js"></script>
-    <script src="/libreries/datatable-boostrap/js/dataTables.buttons.min.js"></script>
-    <script src="/libreries/datatable-boostrap/js/jszip.min.js"></script>
-    <script src="/libreries/datatable-boostrap/js/buttons.html5.min.js"></script>
-    <script src="/libreries/datatable-boostrap/js/pdfmake.min.js"></script>
-    <script src="/libreries/datatable-boostrap/js/vfs_fonts.js"></script>
-    <script src="/libreries/datatable-boostrap/js/dataTables.responsive.min.js"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-
+    <link rel="stylesheet" href="{{ asset('libreries') }}/sweetalert.min.css">
+    <script src="{{ asset('libreries') }}/sweetalert.min.js"></script>
     <link rel="stylesheet" href="/libreries/datatable-boostrap/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="/libreries/datatable-boostrap/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="/libreries/datatable-boostrap/css/buttons.dataTables.min.css">
 
-    {{-- <script src="/libreries/datatable-custon.js"></script> --}}
+  
 
     <script>
         $(document).ready(function(){
@@ -342,7 +339,7 @@
         {
             sortable: false,
             "render": function (data, type, row, meta) {
-                console.log(row);
+                
                 if(row.status == 'PENDIENTE'){
                     return '<h5 style="color: #700101;">PENDIENTE</h5>';
                 }else if(row.status == 'ENTREGADO'){
@@ -358,7 +355,7 @@
         {
             sortable: false,
             "render": function (data, type, row, meta) {
-                console.log(row);
+               
                 if(row.status == 'PENDIENTE'){
                     return '<button value="' + row.id + '" type="button" title="Entregar Producto Agropecuario" id="btn-entrega-producto" class="btn btn-danger"><i class="fab fa-product-hunt"></i></button>';
                 }else if(row.status == 'ENTREGADO'){

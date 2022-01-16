@@ -48,8 +48,14 @@
 
     <div class="form-row">
         <div class="form-group col-md-12" style="text-align: center;">
-            <h3 for="ausenciap1">PUNTOS YA ENTREGADOS</h3>
-            <div id="map-eventos-sociales" class="col-sm-12" style="height: 402px; "></div>
+            <h3 for="ausenciap1">PUNTOS Y COORDENADAS</h3>
+            <select class="form-control col-sm-12" id="filter-count" style="text-align: center;">
+                <option value="total">TOTAL {{ $data_count->total }}</option>
+                <option value="entregados">ENTREGADOS {{ $data_count->total_entregados }}</option>
+                <option value="pendientes">PENDIENTES {{ $data_count->total_pendientes }}</option>
+                <option value="observados">OBSERVADOS {{ $data_count->total_observados }}</option>
+            </select>
+            <div id="map-eventos-sociales" class="col-sm-12" style="height: 402px; margin-top: 20px;"></div>
         </div>
     </div>
 
@@ -62,21 +68,19 @@
 </div>
 @endsection
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
 
-<!-- <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script> -->
+<script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
 
 <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
 <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet.wms@0.2.0/dist/leaflet.wms.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.4/proj4.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.js"></script>
+<script src="{{ asset('libreries') }}/leaflet-map/js/leaflet.js"></script>
+<script src="{{ asset('libreries') }}/leaflet-map/js/leaflet.wms.js"></script>
+<script src="{{ asset('libreries') }}/leaflet-map/js/proj4.js"></script>
+<script src="{{ asset('libreries') }}/leaflet-map/js/proj4leaflet.js"></script>
 
-
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<link rel="stylesheet" href="{{ asset('libreries') }}/leaflet-map/css/leaflet.css" />
 
 
 
@@ -166,7 +170,7 @@ $(document).ready(function() {
 
     //marga el inicio del mapa 
     //mymap.setView([-17.39382474713952, -66.15696143763128], 18);
-    mymap.setView([-17.42534481511455, -66.19080006078113], 18);
+    mymap.setView([-17.425460491975,-66.201554314586], 13);
 
     setTimeout(function() {
         mymap.invalidateSize();
@@ -174,34 +178,148 @@ $(document).ready(function() {
 
     let marker;
     '@foreach($data_persons as $value)'
-
-     ubications = '{{ $value->ubicacion }}'.split(',');
-     var greenIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+    ubications = '{{ $value->ubicacion }}'.split(',');
+    if ('{{$value->status}}' == 'ENTREGADO') {
+        var valueIcon = new L.Icon({
+            iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-green.png',
+            shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
         });
+    } else if ('{{$value->status}}' == 'PENDIENTE') {
+        var valueIcon = new L.Icon({
+            iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-red.png',
+            shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+    } else if ('{{$value->status}}' == 'OBSERVADO') {
+        var valueIcon = new L.Icon({
+            iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-orange.png',
+            shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+    }
+
     marker = new L.Marker(ubications, {
         draggable: false,
-        icon: greenIcon
+        icon: valueIcon
     });
 
     mymap.addLayer(marker);
     nombre = '{{ $value->nombre." ".$value->primer_ap. " ".$value->segundo_ap }}';
-    
+
     marker.bindPopup('<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
         '<span class="my-div-span"><b>Nombre: </b>' + nombre + '<br>' +
         '<b>CI: </b>{{ $value->ci }}<br>' +
         '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
+        '<b>Rubro: </b>{{ $value->categoria_name }}<br>' +
+        '<b>Tipo: </b>{{ $value->tipo }}<br>' +
         '<b>Fecha: </b>{{ $value->fecha_entrega }}<br>' +
-        '</span>').openPopup();
+        '<b>Estado:  {{ $value->status }}</b><br>' +
+        '</span>');
 
-        '@endforeach'
+    '@endforeach'
+
+
+
+    //counter filter select
+
+    $('#filter-count').on('change', function() {
+
+        $.ajax({
+            type: "POST",
+            url: "{{ route('personas.filter') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                criterio: $(this).val(),
+            },
+            success: function(data) {
+                if (data.status == true) {
+
+                    $(".leaflet-marker-icon").remove();
+                    $(".leaflet-marker-shadow").remove();
+                    $(".leaflet-popup").remove();
+                    mymap.setView([-17.425460491975,-66.201554314586], 
+                    13,{
+                  'animate': true,
+                  'duration': 3});
+                    $.each(data.response, function(index, value) {
+                        ubications = value.ubicacion.split(',');
+                        if (value.status == 'ENTREGADO') {
+                            var valueIcon = new L.Icon({
+                                iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-green.png',
+                                shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                        } else if (value.status == 'PENDIENTE') {
+                            var valueIcon = new L.Icon({
+                                iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-red.png',
+                                shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                        } else if (value.status == 'OBSERVADO') {
+                            var valueIcon = new L.Icon({
+                                iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-orange.png',
+                                shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                        }
+
+                        marker = new L.Marker(ubications, {
+                            draggable: false,
+                            icon: valueIcon
+                        });
+
+                        mymap.addLayer(marker);
+                        nombre = value.nombre+" "+ value.primer_ap +" "+ value.segundo_ap;
+
+                        marker.bindPopup(
+                            '<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
+                            '<span class="my-div-span"><b>Nombre: </b>' +
+                            nombre + '<br>' +
+                            '<b>CI: </b>'+ value.ci +'<br>' +
+                            '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
+                            '<b>Rubro: </b>'+value.categoria_name + '<br>' +
+                            '<b>Tipo: </b>'+ value.tipo +'<br>' +
+                            '<b>Fecha: </b>'+ value.fecha_entrega + '<br>' +
+                            '<b>Estado:  '+value.status +'</b><br>' +
+                            '</span>');
+
+                    });
+                }
+            }
+        });
+
+
+    });
+
+    //end counter filter
+
+
+
+
 });
 //end map code
+
+
+
 
 const config = {
     type: 'bar',
@@ -219,7 +337,7 @@ const config = {
             'Maica Bolivia'
         ],
         datasets: [{
-            label: '# of Votes',
+            label: '# Entregas',
             data: [
                 '{{ $data_count->maica_sud }}',
                 '{{ $data_count->maica_chica }}',

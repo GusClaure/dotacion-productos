@@ -22,13 +22,43 @@ class PersonaController extends Controller{
 
     public function getAllRegisterPerson(Request $request){
 
-		$entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
-        $pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();
-		$observado = DB::table('personas')->where(['status' => 'OBSERVADO'])->count();
-        return view('personas.personas', ['entregados' => $entregados, 'pendientes' => $pendientes, 'observado' => $observado]);
+		
+        return view('personas.personas', ['data_count' => Persona::getAllCountData()]);
 
     }
 
+
+	public function personFilter(Request $request){
+	//$request->criterio
+	$registro = '';
+	if($request->criterio == 'total'){
+		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
+							->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
+							->get();
+	}else if($request->criterio == 'entregados'){
+		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
+		->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
+		->where(['personas.status' => 'ENTREGADO'])
+		->get();
+	}else if($request->criterio == 'pendientes'){
+		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
+		->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
+		->where(['personas.status' => 'PENDIENTE'])
+		->get();
+	}else if($request->criterio == 'observados'){
+		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
+		->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
+		->where(['personas.status' => 'OBSERVADO'])
+		->get();
+	}
+	
+	return response([
+		'status'=> true,
+		'response'=> $registro
+	 ],200);
+
+
+	}
 
     public function GetAllRegisterDatatable(Request $request){
 

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
 	 Route::post('personas/get-data-all', 'App\Http\Controllers\personas\PersonaController@GetAllRegisterDatatable')->name('personas.get-data-all');
 	 Route::post('personas/get-detalle', 'App\Http\Controllers\personas\PersonaController@getDetalleEntrega')->name('personas.detalle');
 	 Route::put('personas/update', 'App\Http\Controllers\personas\PersonaController@UpdateEntregaProducto')->name('personas.update');
-
+	 Route::post('personas/filter', 'App\Http\Controllers\personas\PersonaController@personFilter')->name('personas.filter');
 	 
 	 
 	 

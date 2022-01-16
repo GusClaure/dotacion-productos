@@ -31,7 +31,7 @@ class HomeController extends Controller
             //dd(Persona::getAllPersonWith('Maica Sud', 'ENTREGADO'));
             return view('dashboard', [
                 'data_count' => Persona::getAllCountData(),
-                'data_persons' => Persona::getAllPersonWith('Maica Sud', 'ENTREGADO')
+                'data_persons' => Persona::getAllPersonWith()
             ]);
         }else{
             // $entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();

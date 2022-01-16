@@ -64,7 +64,10 @@ class Persona extends Model
     }
 
 
-    public static function getAllPersonWith($sindicato, $status){
-       return Persona::where(['sindicato' => $sindicato, 'status' => $status])->get();
+    public static function getAllPersonWith(){
+
+       return Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
+                        ->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
+                        ->get();
     }
 }
