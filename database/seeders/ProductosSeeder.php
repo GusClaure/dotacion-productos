@@ -15,28 +15,33 @@ class ProductosSeeder extends Seeder
     public function run()
     {
         producto::create([
-            'nombre'  =>  'Promotor Vitaminico',
-            'descripcion'  =>  'PROMOTOR “L” es una fórmula donde se incluyen las vitaminas y aminoácidos, en concentraciones adecuadas, indispensables para el correcto funcionamiento del fisiologismo orgánico. Su presentación en forma líquida evita las dificultades que pudieran aparecer con algunos tipos de bebederos automáticos.'
+            'nombre'  =>  'Alimento Balanceado para Ganado Vacuno Lechero',
+            'cantidad'  =>  15.385,00,
+            'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Suplemento ni idea',
-            'descripcion'  =>  'descripcion'
+            'nombre'  =>  'Alimento Balanceado para Ganado Vacuno de Engorde',
+            'cantidad'  =>  15.385,00,
+            'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Alimento Balanceado',
-            'descripcion'  =>  'Los ALIMENTOS BALANCEADOS, son mezclas homogéneas de varios alimentos, formulados en cantidad y proporción para satisfacer en lo posible todas las necesidades alimenticias y nutricionales de una especie animal durante un periodo de 24'
+            'nombre'  =>  'Promotor (vitamínico y mineral) de producción láctea para ganado vacuno',
+            'cantidad'  =>  10.274,00,
+            'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Ganado Vacuno',
-            'descripcion'  =>  'Los ALIMENTOS BALANCEADOS, son mezclas homogéneas de varios alimentos, formulados en cantidad y proporción para satisfacer en lo posible todas las necesidades alimenticias y nutricionales de una especie animal durante un periodo de 24'
+            'nombre'  =>  'Suplemento Mineral para Ganado Vacuno',
+            'cantidad'  =>  10.417,00,
+            'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Fertilizante Urea',
-            'descripcion'  =>  'Los ALIMENTOS BALANCEADOS, son mezclas homogéneas de varios alimentos, formulados en cantidad y proporción para satisfacer en lo posible todas las necesidades alimenticias y nutricionales de una especie animal durante un periodo de 24'
+            'nombre'  =>  'Fertilizante Urea 46% N granulado',
+            'cantidad'  =>  6.128,00,
+            'unidad' =>'Bolsas 50 kg.'
         ]);
     }
 }

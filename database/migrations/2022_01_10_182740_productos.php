@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class Productos extends Migration
 {
@@ -16,7 +17,8 @@ class Productos extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre',150)->nullable(false);
-            $table->text('descripcion');
+            $table->double('cantidad');
+            $table->string('unidad');
             $table->integer('status')->default(1);
             $table->timestamp('fecha_registro')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

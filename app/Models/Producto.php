@@ -11,8 +11,8 @@ class Producto extends Model
     
     protected $fillable = [
         'id',
-        'nombre',
-        'descripcion'
+        'cantidad',
+        'unidad'
     ];
 
     protected $hiden = ['fecha_registro'];
