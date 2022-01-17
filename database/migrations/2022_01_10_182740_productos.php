@@ -16,8 +16,8 @@ class Productos extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nombre',150)->nullable(false);
-            $table->double('cantidad');
+            $table->string('nombre',150);
+            $table->string('cantidad');
             $table->string('unidad');
             $table->integer('status')->default(1);
             $table->timestamp('fecha_registro')->default(DB::raw('CURRENT_TIMESTAMP'));

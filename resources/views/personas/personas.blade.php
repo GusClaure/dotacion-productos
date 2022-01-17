@@ -38,9 +38,6 @@
                     </tr>
                 </thead>
 
-                  {{-- <tbody class="list">
-              
-                  </tbody> --}}
                 </table>
 
 
@@ -118,21 +115,21 @@
             </div>
 
               <div class="form-group">
-                <label>Productos</label>
-                <select class="form-control" id="exampleFormControlSelect1">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                <label>Estado de la entrega</label>
+                <select class="form-control" id="select-observacion">
+                <option value="" selected disabled>Seleccione una Opción</option>
+                  <option value="0">Sin Observación</option>
+                  <option value="1">Con Observación</option>
                 </select>
               </div>
 
-              <div class="form-group">
-                <label>Estado de la entrega</label>
-                <select class="form-control" id="select-observacion">
-                  <option value="0">Sin Observación</option>
-                  <option value="1">Con Observación</option>
+              <div class="form-group" id="s-observacion" style="display: none">
+                <label>Productos</label>
+                <select class="form-control" multiple="multiple" id="productos-select">
+                
+                @foreach($productos as $value)
+                  <option value="{{ $value->id}}">{{ $value->nombre }}</option>
+                  @endforeach
                 </select>
               </div>
 
@@ -156,9 +153,11 @@
         @include('layouts.footers.auth')
     </div>
 @endsection
+   <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="{{ asset('assets') }}/vendor/select2/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/select2/dist/css/select2.min.css">
 
-
-    <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
+    
     <script src="../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('libreries') }}/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
     <script src="{{ asset('libreries') }}/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
@@ -176,10 +175,25 @@
     <link rel="stylesheet" href="/libreries/datatable-boostrap/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="/libreries/datatable-boostrap/css/buttons.dataTables.min.css">
 
-  
+<style>
+
+</style>
 
     <script>
+ 
         $(document).ready(function(){
+
+            $('#productos-select').select2({
+                placeholder: 'Seleccione las opciones',
+                allowClear: true,
+               // multiple: true,
+                width: '100%',
+                dropdownParent: $('#modal-entrega'),
+                tags: true
+            });
+
+
+
 
             $(document).on('click', '#btn-entrega-producto', function(){
                 
@@ -195,6 +209,7 @@
                     success: function (data) {
                         $('#observacion').val('');
                         if(data.status == true){
+                          console.log(data.productos);
                             $('#title-modal').text('ENTREGA DE PRODUCTO AGROPECUARIO FORMULARIO N.º ' + data.response.nro_formulario);
                             $('#name').val($.trim(data.response.nombre +' '+ data.response.primer_ap + ' '+ data.response.segundo_ap));
                             $('#ci').val(data.response.ci);
@@ -205,7 +220,10 @@
                             $('#categoria').val(data.response.categoria_name);
                             $('#tipo').val(data.response.tipo);
                             $('#btn-entregar-producto').val(btn_id);
+                            $("#productos-select").val('').trigger('change');
                             $('#modal-entrega').modal('show');
+                           
+            
                         }
                 }         
             });
@@ -216,10 +234,13 @@
             
             $('#select-observacion').change(function() {
                 if($(this).val() == 0){
+                    $('#s-observacion').show(500);
                     $('#observacion').val('');
                     $('#txt_obs').hide(500);
                 }else if($(this).val() == 1){
                     $('#txt_obs').show(500);
+                    $("#productos-select").val('').trigger('change');
+                    $('#s-observacion').hide(500);
                 }
                 
             });
@@ -233,6 +254,7 @@
                     _token: "{{ csrf_token() }}",
                     id_registro: $(this).val(),
                     status_observacion: $('#select-observacion').val(),
+                    productos: $('#productos-select').val(),
                     observacion: $('#observacion').val()
                     },
                     success: function (data) {
@@ -241,7 +263,6 @@
                             $('#list-registro').DataTable().ajax.reload();
                             $('#num-entregados').text(data.entregados);
                             $('#num-pendientes').text(data.pendientes);
-                            
                             swal("OK!", data.response, "success")
                         }
                 }         
@@ -342,6 +363,8 @@
                 
                 if(row.status == 'PENDIENTE'){
                     return '<h5 style="color: #700101;">PENDIENTE</h5>';
+                }if(row.status == 'PENDIENTE-PRODUCTO'){
+                    return '<h5 style="color: #700101;">PENDIENTE DE PRODUCTO</h5>';
                 }else if(row.status == 'ENTREGADO'){
                     return '<h5 style="color: #035e1b;">ENTREGADO</h5>';
                 }else if(row.status == 'OBSERVADO'){
@@ -358,6 +381,8 @@
                
                 if(row.status == 'PENDIENTE'){
                     return '<button value="' + row.id + '" type="button" title="Entregar Producto Agropecuario" id="btn-entrega-producto" class="btn btn-danger"><i class="fab fa-product-hunt"></i></button>';
+                }if(row.status == 'PENDIENTE-PRODUCTO'){
+                    return '<button value="' + row.id + '" type="button" title="Entregar Producto Agropecuario Faltante" id="btn-entrega-producto" class="btn btn-danger"><i class="fas fa-project-diagram"></i></button>';
                 }else if(row.status == 'ENTREGADO'){
                     return '<button value="' + row.id + '" type="button" title="Ver detalle" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>';
                 }else if(row.status == 'OBSERVADO'){

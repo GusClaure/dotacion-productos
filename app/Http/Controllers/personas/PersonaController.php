@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\personas;
 
+use Productos;
 use App\Models\Persona;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
 
 class PersonaController extends Controller{
 
@@ -22,9 +23,9 @@ class PersonaController extends Controller{
 
     public function getAllRegisterPerson(Request $request){
 
-		
-        return view('personas.personas', ['data_count' => Persona::getAllCountData()]);
-
+		$productos = Producto::select('id', 'nombre')
+				     ->where(['status' => 1])->get();
+        return view('personas.personas', ['data_count' => Persona::getAllCountData(), 'productos' =>$productos]);
     }
 
 
@@ -112,12 +113,18 @@ class PersonaController extends Controller{
 	public function getDetalleEntrega(Request $request){
 
 		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
-		            ->where(['personas.id' => $request->id, 'personas.status' => 'PENDIENTE'])->first();
+		            ->where(['personas.id' => $request->id])
+					->first();
+
+		
 
 		if($registro){
+
+			$productos = explode(",", $registro->producto);
 			return response([
 				'status'=> true,
-				'response'=> $registro
+				'response'=> $registro,
+				'productos' => $productos
 			 ],200);
 		}else{
 			return response([
@@ -133,36 +140,71 @@ class PersonaController extends Controller{
 
 		$this->validate($request, [
 			'id_registro' => 'required',
-			'status_observacion' => 'required'
+			'status_observacion' => 'required',
+			'productos' => 'required'
 		]);
 
+		
 		if($request->status_observacion == 0){
 	
-			$registro = Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
-			->update([
-				'usuario_id' => Auth::id(),
-				'fecha_entrega' => date('Y-m-d H:i:s'),
-				'status' => 'ENTREGADO'
-			]);
+			$counter = count($request->productos);
+			$value_d = '';
+			foreach($request->productos as $value){
+				$value_d = $value.','.$value_d;
+			}
 
-			$entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
-			$pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();
-			$observado = DB::table('personas')->where(['status' => 'OBSERVADO'])->count();
+			if( $counter == 5 ){
 
-			return response([
-				'status'=> true,
-				'response'=> 'Registro exitoso!',
-				'entregados' => $entregados,
-			    'pendientes' => $pendientes,
-				'observado' => $observado
-			 ],200);
+				Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
+				->update([
+					'usuario_id' => Auth::id(),
+					'fecha_entrega' => date('Y-m-d H:i:s'),
+					'producto' => substr($value_d, 0, -1),
+					'status' => 'ENTREGADO'
+				]);
+				
+				$data = Persona::getAllCountData();
+	
+				return response([
+					'status'=> true,
+					'response'=> 'Registro exitoso!',
+					'entregados' => $data->total_entregados,
+					'pendientes' => $data->total_pendientes,
+					'observado' => $data->total_observados
+				 ],200);
+
+			}else if($counter < 5){
+
+				Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
+				->update([
+					'usuario_id' => Auth::id(),
+					'fecha_entrega' => date('Y-m-d H:i:s'),
+					'producto' => substr($value_d, 0, -1),
+					'status' => 'PENDIENTE-PRODUCTO'
+				]);
+                $data = Persona::getAllCountData();
+				return response([
+					'status'=> true,
+					'response'=> 'Registro exitoso!',
+					'entregados' => $data->total_entregados,
+					'pendientes' => $data->total_pendientes,
+					'observado' => $data->total_observados
+				 ],200);
+			}else{
+				return response([
+					'status'=> false,
+					'message'=> 'No se puede registrar mas de 5 productos'
+				 ],200);
+			}
+			
+		
  
 		}else if($request->status_observacion == 1){
 
 			if($request->observacion != '' || $request->observacion != null){
 
 
-				$registro = Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
+			    Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
 				->update([
 					'usuario_id' => Auth::id(),
 					'fecha_entrega' => date('Y-m-d H:i:s'),
@@ -170,15 +212,13 @@ class PersonaController extends Controller{
 					'status' => 'OBSERVADO'
 				]);
 
-				$entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
-			    $pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();
-				$observado = DB::table('personas')->where(['status' => 'OBSERVADO'])->count();
+				$data = Persona::getAllCountData();
 				return response([
 					'status'=> true,
 					'response'=> 'Registro exitoso!',
-					'entregados' => $entregados,
-			        'pendientes' => $pendientes,
-					'observado' => $observado
+					'entregados' => $data->total_entregados,
+					'pendientes' => $data->total_pendientes,
+					'observado' => $data->total_observados
 				 ],200);
 
 			}else{

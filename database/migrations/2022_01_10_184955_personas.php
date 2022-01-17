@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class Personas extends Migration
 {
@@ -31,9 +32,9 @@ class Personas extends Migration
             $table->timestamp('fecha_entrega')->nullable();
             $table->unsignedBigInteger('categoria_id');
             $table->string('tipo');
-            $table->string('producto')->nullable();;
+            $table->string('producto')->nullable();
             $table->text('observacion')->nullable();
-            $table->enum('status',['PENDIENTE','ENTREGADO', 'OBSERVADO'])->default('PENDIENTE');
+            $table->enum('status',['PENDIENTE','ENTREGADO', 'OBSERVADO', 'PENDIENTE-PRODUCTO'])->default('PENDIENTE');
             $table->foreign('categoria_id')->references('id')->on('categorias');
         });
     }
