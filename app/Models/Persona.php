@@ -44,6 +44,7 @@ class Persona extends Model
            count(1) as total,
            count(1) filter (where status = :status_entregado) as total_entregados,
            count(1) filter (where status = 'PENDIENTE') as total_pendientes,
+           count(1) filter (where status = 'PENDIENTE-PRODUCTO') as total_pendientes_producto,
            count(1) filter (where status = 'OBSERVADO') as total_observados,
            count(1) filter (where sindicato = 'Maica Sud' and status = 'ENTREGADO') as Maica_Sud,
            count(1) filter (where sindicato = 'Maica Chica' and status = 'ENTREGADO') as Maica_Chica,

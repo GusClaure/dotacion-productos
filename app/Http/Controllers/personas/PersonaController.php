@@ -170,6 +170,7 @@ class PersonaController extends Controller{
 					'response'=> 'Registro exitoso!',
 					'entregados' => $data->total_entregados,
 					'pendientes' => $data->total_pendientes,
+					'pendientes_producto' => $data->total_pendientes_producto,
 					'observado' => $data->total_observados
 				 ],200);
 
@@ -188,6 +189,7 @@ class PersonaController extends Controller{
 					'response'=> 'Registro exitoso!',
 					'entregados' => $data->total_entregados,
 					'pendientes' => $data->total_pendientes,
+					'pendientes_producto' => $data->total_pendientes_producto,
 					'observado' => $data->total_observados
 				 ],200);
 			}else{
@@ -218,6 +220,7 @@ class PersonaController extends Controller{
 					'response'=> 'Registro exitoso!',
 					'entregados' => $data->total_entregados,
 					'pendientes' => $data->total_pendientes,
+					'pendientes_producto' => $data->total_pendientes_producto,
 					'observado' => $data->total_observados
 				 ],200);
 
