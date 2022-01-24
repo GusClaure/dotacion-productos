@@ -42,10 +42,14 @@ Route::group(['middleware' => 'auth'], function () {
 	 Route::get('personas/get-all-registers', 'App\Http\Controllers\personas\PersonaController@getAllRegisterPerson')->name('persona.get-all');
 	 Route::post('personas/get-data-all', 'App\Http\Controllers\personas\PersonaController@GetAllRegisterDatatable')->name('personas.get-data-all');
 	 Route::post('personas/get-detalle', 'App\Http\Controllers\personas\PersonaController@getDetalleEntrega')->name('personas.detalle');
-	 Route::put('personas/update', 'App\Http\Controllers\personas\PersonaController@UpdateEntregaProducto')->name('personas.update');
+	 
 	 Route::post('personas/filter', 'App\Http\Controllers\personas\PersonaController@personFilter')->name('personas.filter');
+	 Route::put('personas/update-entrega', 'App\Http\Controllers\personas\PersonaController@updateEntregaProducto')->name('update.entrega');
 	 
+	//entragas controller
+	Route::post('entregas/entrega-producto', 'App\Http\Controllers\entregas\RegistroEntregaController@RegistroEntregaProducto')->name('entrega.producto');
+	Route::post('entregas/entrega-detalle', 'App\Http\Controllers\entregas\RegistroEntregaController@getDetalleEntregaCompl')->name('detalle.entrega');
 	 
-	 
+	
 });
 

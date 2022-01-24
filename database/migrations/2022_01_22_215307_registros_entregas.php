@@ -16,13 +16,12 @@ class RegistrosEntregas extends Migration
     {
         Schema::create('registros_entregas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_usuario');
             $table->unsignedBigInteger('id_persona');
             $table->text('observacion')->nullable();
-            $table->timestamp('fecha_entrega')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('fecha_registro')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('status');
 
-            $table->foreign('id_usuario')->references('id')->on('users');
+           
             $table->foreign('id_persona')->references('id')->on('personas');
         
         });

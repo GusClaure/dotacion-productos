@@ -13,10 +13,9 @@ class RegistroEntrega extends Model
 
     protected $fillable = [
         'id',
-        'id_usuario',
         'id_persona',
         'observacion',
-        'fecha_entrega',
+        'fecha_registro',
         'status'
     ];
 

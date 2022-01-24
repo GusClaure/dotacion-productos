@@ -233,7 +233,7 @@ $(document).ready(function() {
         '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
         '<b>Rubro: </b>{{ $value->nombre_rubro }}<br>' +
         '<b>Tipo: </b>{{ $value->tipo }}<br>' +
-        '<b>Fecha: </b>{{ $value->fecha_entrega }}<br>' +
+        '<b>Fecha: </b><br>' +
         '<b>Estado:  {{ $value->status }}</b><br>' +
         '</span>');
     }
@@ -324,7 +324,7 @@ $(document).ready(function() {
                             '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
                             '<b>Rubro: </b>'+value.nombre_rubro + '<br>' +
                             '<b>Tipo: </b>'+ value.tipo +'<br>' +
-                            '<b>Fecha: </b>'+ value.fecha_entrega + '<br>' +
+                            '<b>Fecha: </b><br>' +
                             '<b>Estado:  '+value.status +'</b><br>' +
                             '</span>');
                         }

@@ -13,8 +13,10 @@ class EntregaProducto extends Model
 
     protected $fillable = [
         'id',
+        'id_usuario',
         'id_registro',
         'id_producto',
+        'fecha_entrega',
         'status'
     ];
 

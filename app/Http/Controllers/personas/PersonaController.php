@@ -36,7 +36,7 @@ class PersonaController extends Controller{
 	$registro = '';
 	if($request->criterio == 'total'){
 		$registro = Persona::select('ci','descripcion','distrito','expedido',
-							'fecha_entrega','nombre','nombre_rubro',
+							'nombre','nombre_rubro',
 							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
 							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
 							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
@@ -45,7 +45,7 @@ class PersonaController extends Controller{
 	
 	}else if($request->criterio == 'entregados'){
 		$registro = Persona::select('ci','descripcion','distrito','expedido',
-							'fecha_entrega','nombre','nombre_rubro',
+							'nombre','nombre_rubro',
 							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
 							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
 							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
@@ -55,7 +55,7 @@ class PersonaController extends Controller{
 	}else if($request->criterio == 'pendientes'){
 
 		$registro = Persona::select('ci','descripcion','distrito','expedido',
-							'fecha_entrega','nombre','nombre_rubro',
+							'nombre','nombre_rubro',
 							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
 							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
 							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
@@ -65,7 +65,7 @@ class PersonaController extends Controller{
 
 	}else if($request->criterio == 'pendientes_productos'){
 		$registro = Persona::select('ci','descripcion','distrito','expedido',
-							'fecha_entrega','nombre','nombre_rubro',
+							'nombre','nombre_rubro',
 							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
 							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
 							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
@@ -160,65 +160,20 @@ class PersonaController extends Controller{
 	}
 
 
-	public function UpdateEntregaProducto(Request $request){
-	
+
+
+	public function updateEntregaProducto(Request $request){
 		$this->validate($request, [
-			'id_persona' => 'required',
-			'productos' => 'required'
-		]);
+			'id_persona' => 'required'
+		], [
+			'required' => ':attribute es requerido!'
+		]);		
 
-		$check_person = Persona::select()
-					->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
-					->where(['personas.id' => $request->id_persona, 'personas.status' => 'ACTIVO'])
-					->first();
 		
-		if($check_person){
-
-			if($check_person->status == null){
-				$status = '';
-				if(count($request->productos) < 5){
-					$status = 'PENDIENTE-PRODUCTO';
-				}else{
-					$status = 'ENTREGADO';
-				}
-	
-				$registro = new RegistroEntrega();
-				$registro->id_usuario = Auth::id();
-				$registro->id_persona = $request->id_persona;
-				$registro->observacion = trim($request->observacion);
-				$registro->status = $status;
-				$registro->save();
-				
-				$producto = new EntregaProducto();
-				foreach($request->productos as $value){
-					$producto->id_registro = $registro->id;
-					$producto->id_producto = $value;
-					$producto->save();
-				}
-
-				$data = Persona::getAllCountData();
-				return response([
-					'status'=> true,
-					'response'=> 'Registro exitoso!',
-					'entregados' => $data->total_entregados,
-					'pendientes' => $data->total_pendientes,
-					'pendientes_producto' => $data->total_pendientes_producto,
-					'observado' => $data->total_observados
-				 ],200);
-			}else{
-				return response([
-					'status'=> false,
-					'message'=> 'No se pudo guardar recargue la pagina'
-				 ],200);
-			}
-
-		}else{
-			return response([
-				'status'=> false,
-				'message'=> 'No se encontro ningun resultado resultado o el registro fue anulado'
-			 ],200);
-		}
+		return 'dwada';
 	}
+
+
 
     public function saveNewRegister(Request $request){
 

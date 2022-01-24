@@ -16,10 +16,14 @@ class EntregasProductos extends Migration
     {
         Schema::create('entregas_productos', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('id_usuario');
             $table->unsignedBigInteger('id_registro');
             $table->unsignedBigInteger('id_producto');
+            $table->timestamp('fecha_entrega')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('status')->default('ENTREGADO');
         
+         
+            $table->foreign('id_usuario')->references('id')->on('users');
             $table->foreign('id_registro')->references('id')->on('registros_entregas');
             $table->foreign('id_producto')->references('id')->on('productos');
         

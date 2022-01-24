@@ -117,6 +117,14 @@
                     </div>
                 </div>
 
+                <div class="form-group" id="div-entregados" style="display: none;">
+                    <div style="text-align: center; color: #f5365c;">
+                        <label>Productos ya Entregados</label>
+                    </div>
+                    <div id="productos-entregados">
+                    </div>
+                </div>
+
                 <div class="form-group" id="s-observacion">
                     <label>Productos</label>
                     <select class="form-control" multiple="multiple" id="productos-select">
@@ -186,7 +194,7 @@ $(document).ready(function() {
 
 
     $(document).on('click', '#btn-entrega-producto', function() {
-
+        $('#div-entregados').hide();
         var btn_id = $(this).val();
 
         $.ajax({
@@ -226,12 +234,10 @@ $(document).ready(function() {
     });
 
 
-
-
     $(document).on('click', '#btn-entregar-producto', function() {
         $.ajax({
-            type: "PUT",
-            url: "{{ route('personas.update') }}",
+            type: "POST",
+            url: "{{ route('entrega.producto') }}",
             data: {
                 _token: "{{ csrf_token() }}",
                 id_persona: $(this).val(),
@@ -405,7 +411,9 @@ $(document).ready(function() {
                     }
                     if (row.status == 'PENDIENTE-PRODUCTO') {
                         return '<button value="' + row.id +
-                            '" type="button" title="Entregar Producto Agropecuario Faltante" id="btn-pendiente-producto" class="btn btn-danger"><i class="fas fa-project-diagram"></i></button>';
+                            '" type="button" title="Entregar Producto Agropecuario Faltante" id="btn-pendiente-producto" class="btn btn-danger"><i class="fas fa-project-diagram"></i></button>'+
+                            '<button value="' + row.id +
+                            '" type="button" title="Detalle de la entrega" id="btn-detalle-entrega" class="btn btn-success"><i class="fas fa-eye"></i></button>';
                     } else if (row.status == 'ENTREGADO') {
                         return '<button value="' + row.id +
                             '" type="button" title="Ver detalle" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>';
@@ -493,7 +501,52 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '#btn-pendiente-producto', function() {
-alert('pendiente en desarrollo');
+        $('#div-entregados').show();
+        btn_id = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: "{{ route('detalle.entrega') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id_persona: $(this).val(),
+            },
+            success: function(data) {
+                console.log(data.response);
+                if(data.status == true){
+                    one_data = data.response[0];
+                    $('#title-modal').text(
+                        'COMPLEMENTACION DE ENTREGA DE PRODUCTO AGROPECUARIO FORMULARIO N.º ' + one_data.nro_formulario);
+                    $('#name').val($.trim(one_data.nombre + ' ' + one_data.primer_ap + ' ' + one_data.segundo_ap));
+                    $('#ci').val(one_data.ci);
+                    $('#expedido').val(one_data.expedido);
+                    $('#celular').val(one_data.nro_cel);
+                    $('#distrito').val(one_data.distrito);
+                    $('#central').val(one_data.sub_central);
+                    $('#rubro').val(one_data.nombre_rubro);
+                    $('#tipo').val(one_data.tipo);
+                    $('#btn-entregar-producto').val(btn_id);
+                    $('#observacion').val(one_data.observacion);
+                    $("#productos-select").empty();
+                    $("#productos-entregados").empty();
+                     var productos_entregados = '';
+                    $.each(data.response, function(index, value){
+                        productos_entregados = productos_entregados + '<label class="form-control">'+ (index + 1) + '.- '+ value.nombre_producto+'</label>';
+                    });
+                    var productos_data = '';
+                    $.each(data.productos, function(index, value){
+                        productos_data = productos_data + '<option value="'+ value.id +'">'+value.nombre_producto+'</option>';
+                    });
+                    $("#productos-entregados").append(productos_entregados);
+                    $("#productos-select").append(productos_data);
+                    $('#modal-entrega').modal('show');
+                }
+                
+
+            }
+        });
     });
+
+
+    
 });
 </script>
