@@ -15,31 +15,31 @@ class ProductosSeeder extends Seeder
     public function run()
     {
         producto::create([
-            'nombre'  =>  'Alimento Balanceado para Ganado Vacuno Lechero',
+            'nombre_producto'  =>  'Alimento Balanceado para Ganado Vacuno Lechero',
             'cantidad'  =>  '15.385,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Alimento Balanceado para Ganado Vacuno de Engorde',
+            'nombre_producto'  =>  'Alimento Balanceado para Ganado Vacuno de Engorde',
             'cantidad'  =>  '15.385,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Promotor (vitamínico y mineral) de producción láctea para ganado vacuno',
+            'nombre_producto'  =>  'Promotor (vitamínico y mineral) de producción láctea para ganado vacuno',
             'cantidad'  =>  '10.274,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Suplemento Mineral para Ganado Vacuno',
+            'nombre_producto'  =>  'Suplemento Mineral para Ganado Vacuno',
             'cantidad'  =>  '10.417,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
         producto::create([
-            'nombre'  =>  'Fertilizante Urea 46% N granulado',
+            'nombre_producto'  =>  'Fertilizante Urea 46% N granulado',
             'cantidad'  =>  '6.128,00',
             'unidad' =>'Bolsas 50 kg.'
         ]);

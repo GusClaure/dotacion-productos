@@ -107,8 +107,8 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-sm-6">
-                            <label>Categoria</label>
-                            <input type="text" class="form-control" id="categoria" disabled>
+                            <label>Rubro</label>
+                            <input type="text" class="form-control" id="rubro" disabled>
                         </div>
                         <div class="col-sm-6">
                             <label>Tipo</label>
@@ -117,29 +117,17 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Estado de la entrega</label>
-                    <select class="form-control" id="select-observacion">
-                        <option value="" selected disabled>Seleccione una Opción</option>
-                        <option value="0">Sin Observación</option>
-                        <option value="1">Con Observación</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="s-observacion" style="display: none">
+                <div class="form-group" id="s-observacion">
                     <label>Productos</label>
                     <select class="form-control" multiple="multiple" id="productos-select">
 
-                        @foreach($productos as $value)
-                        <option value="{{ $value->id}}">{{ $value->nombre }}</option>
-                        @endforeach
                     </select>
                 </div>
 
-                <div class="form-group" id="txt_obs" style="display: none">
+                <div class="form-group" id="txt_obs">
                     <label>Observación</label>
                     <textarea class="form-control" id="observacion"
-                        placeholder="LLenar este campos si tiene alguna observación" rows="3"></textarea>
+                        placeholder="LLenar este campo solo si es necesario" rows="5"></textarea>
                 </div>
 
 
@@ -191,7 +179,6 @@ $(document).ready(function() {
         allowClear: true,
         // multiple: true,
         width: '100%',
-        dropdownParent: $('#modal-entrega'),
         tags: true
     });
 
@@ -212,7 +199,6 @@ $(document).ready(function() {
             success: function(data) {
                 $('#observacion').val('');
                 if (data.status == true) {
-                    console.log(data.productos);
                     $('#title-modal').text(
                         'ENTREGA DE PRODUCTO AGROPECUARIO FORMULARIO N.º ' + data
                         .response.nro_formulario);
@@ -223,10 +209,15 @@ $(document).ready(function() {
                     $('#celular').val(data.response.nro_cel);
                     $('#distrito').val(data.response.distrito);
                     $('#central').val(data.response.sub_central);
-                    $('#categoria').val(data.response.categoria_name);
+                    $('#rubro').val(data.response.nombre_rubro);
                     $('#tipo').val(data.response.tipo);
                     $('#btn-entregar-producto').val(btn_id);
-                    $("#productos-select").val('').trigger('change');
+                    $("#productos-select").empty();
+                    var productos_data = '';
+                    $.each(data.productos, function(index, value){
+                        productos_data = productos_data + '<option value="'+ value.id +'">'+value.nombre_producto+'</option>';
+                    });
+                    $("#productos-select").append(productos_data);
                     $('#modal-entrega').modal('show');
                 }
             }
@@ -236,19 +227,6 @@ $(document).ready(function() {
 
 
 
-    $('#select-observacion').change(function() {
-        if ($(this).val() == 0) {
-            $('#s-observacion').show(500);
-            $('#observacion').val('');
-            $('#txt_obs').hide(500);
-        } else if ($(this).val() == 1) {
-            $('#txt_obs').show(500);
-            $("#productos-select").val('').trigger('change');
-            $('#s-observacion').hide(500);
-        }
-
-    });
-
 
     $(document).on('click', '#btn-entregar-producto', function() {
         $.ajax({
@@ -256,8 +234,7 @@ $(document).ready(function() {
             url: "{{ route('personas.update') }}",
             data: {
                 _token: "{{ csrf_token() }}",
-                id_registro: $(this).val(),
-                status_observacion: $('#select-observacion').val(),
+                id_persona: $(this).val(),
                 productos: $('#productos-select').val(),
                 observacion: $('#observacion').val()
             },
@@ -267,11 +244,30 @@ $(document).ready(function() {
                     $('#modal-entrega').modal('hide');
                     $('#list-registro').DataTable().ajax.reload();
                     $('#num-entregados').text(data.entregados);
-                    $('#num-pendientes').text(data.pendientes_producto + ' - ' + data
-                        .pendientes);
+                    $('#num-pendientes').text(data.pendientes);
+                    $('#num-producto-pending').text(data.pendientes_producto);
                     swal("OK!", data.response, "success")
+                }else if(data.status == true){
+                    swal({
+                    title: "Ups!",
+                    text: data.message,
+                    type: "warning",
+                    timer: 3000
+                    }),
+                    function () {
+                        location.reload(true);
+                    };
                 }
-            }
+            },
+            error: function(xhr, textStatus, errorThrown){
+                swal({
+                    title: "Ups!",
+                    text: 'Procto es requerido!',
+                    type: "warning",
+                    timer: 2000
+                    });
+                
+            } 
         });
     });
     //
@@ -384,7 +380,7 @@ $(document).ready(function() {
                 sortable: false,
                 "render": function(data, type, row, meta) {
 
-                    if (row.status == 'PENDIENTE') {
+                    if (row.status == null) {
                         return '<h5 style="color: #700101;">PENDIENTE</h5>';
                     }
                     if (row.status == 'PENDIENTE-PRODUCTO') {
@@ -403,7 +399,7 @@ $(document).ready(function() {
                 sortable: false,
                 "render": function(data, type, row, meta) {
 
-                    if (row.status == 'PENDIENTE') {
+                    if (row.status == null) {
                         return '<button value="' + row.id +
                             '" type="button" title="Entregar Producto Agropecuario" id="btn-entrega-producto" class="btn btn-danger"><i class="fab fa-product-hunt"></i></button>';
                     }

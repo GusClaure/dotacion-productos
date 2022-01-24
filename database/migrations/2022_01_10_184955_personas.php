@@ -27,15 +27,12 @@ class Personas extends Migration
             $table->string('sub_central',100);
             $table->string('sindicato',100);
             $table->string('ubicacion');
-            $table->timestamp('fecha_registro')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->integer('usuario_id')->nullable();
-            $table->timestamp('fecha_entrega')->nullable();
-            $table->unsignedBigInteger('categoria_id');
+            $table->unsignedBigInteger('rubro_id');
             $table->string('tipo');
-            $table->string('producto')->nullable();
-            $table->text('observacion')->nullable();
-            $table->enum('status',['PENDIENTE','ENTREGADO', 'OBSERVADO', 'PENDIENTE-PRODUCTO'])->default('PENDIENTE');
-            $table->foreign('categoria_id')->references('id')->on('categorias');
+            $table->timestamp('fecha_registro')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->enum('status',['ACTIVO','INACTIVO'])->default('ACTIVO');
+
+            $table->foreign('rubro_id')->references('id')->on('rubros');
         });
     }
 

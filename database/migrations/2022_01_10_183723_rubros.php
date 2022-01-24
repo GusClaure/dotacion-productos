@@ -1,20 +1,21 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class Categorias extends Migration
+class Rubros extends Migration
 {
     /**
      * Run the migrations.
-     *
+     *s
      * @return void
      */
     public function up(){
-        Schema::create('categorias', function (Blueprint $table) {
+        Schema::create('rubros', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nombre',150)->nullable(false);
+            $table->string('nombre_rubro',150)->nullable(false);
             $table->string('descripcion',100);
             $table->integer('status')->default(1);
             $table->timestamp('fecha_registro')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -29,6 +30,6 @@ class Categorias extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categorias');
+        Schema::dropIfExists('rubros');
     }
 }

@@ -6,8 +6,10 @@ use Productos;
 use App\Models\Persona;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use App\Models\RegistroEntrega;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\EntregaProducto;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,9 +23,9 @@ class PersonaController extends Controller{
 
 
 
-    public function getAllRegisterPerson(Request $request){
+    public function getAllRegisterPerson(){
 
-		$productos = Producto::select('id', 'nombre')
+		$productos = Producto::select('id', 'nombre_producto')
 				     ->where(['status' => 1])->get();
         return view('personas.personas', ['data_count' => Persona::getAllCountData(), 'productos' =>$productos]);
     }
@@ -33,25 +35,45 @@ class PersonaController extends Controller{
 	//$request->criterio
 	$registro = '';
 	if($request->criterio == 'total'){
-		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
-							->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
+		$registro = Persona::select('ci','descripcion','distrito','expedido',
+							'fecha_entrega','nombre','nombre_rubro',
+							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
+							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
+							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
 							->get();
+	
 	}else if($request->criterio == 'entregados'){
-		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
-		->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
-		->where(['personas.status' => 'ENTREGADO'])
-		->get();
+		$registro = Persona::select('ci','descripcion','distrito','expedido',
+							'fecha_entrega','nombre','nombre_rubro',
+							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
+							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
+							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+							->where(['registros_entregas.status' => 'ENTREGADO'])
+							->get();
 	}else if($request->criterio == 'pendientes'){
-		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
-		->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
-		->where(['personas.status' => 'PENDIENTE'])
-		->get();
-	}else if($request->criterio == 'observados'){
-		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))
-		->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
-		->where(['personas.status' => 'OBSERVADO'])
-		->get();
+
+		$registro = Persona::select('ci','descripcion','distrito','expedido',
+							'fecha_entrega','nombre','nombre_rubro',
+							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
+							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
+							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+							->whereNull('registros_entregas.status')
+							->get();
+
+	}else if($request->criterio == 'pendientes_productos'){
+		$registro = Persona::select('ci','descripcion','distrito','expedido',
+							'fecha_entrega','nombre','nombre_rubro',
+							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
+							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
+							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+							->where(['registros_entregas.status' => 'PENDIENTE-PRODUCTO'])
+							->get();
 	}
+	
 	
 	return response([
 		'status'=> true,
@@ -64,8 +86,8 @@ class PersonaController extends Controller{
     public function GetAllRegisterDatatable(Request $request){
 
         
-        $registros = DB::table('personas')
-        ->select()
+        $registros = Persona::select('personas.*', 'registros_entregas.status')
+		->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
         ->where(DB::raw('nro_formulario::text'), 'like', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
         ->orWhere(DB::raw('nro_cel::text'), 'like', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
 		->orWhere('nombre', 'ilike', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
@@ -82,8 +104,8 @@ class PersonaController extends Controller{
         ->orderBy('nombre', 'asc')
         ->get();
 
-        $count = DB::table('personas')
-        ->where(DB::raw('nro_formulario::text'), 'like', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
+        $count = Persona::leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+		->where(DB::raw('nro_formulario::text'), 'like', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
         ->orWhere(DB::raw('nro_cel::text'), 'like', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
 		->orWhere('nombre', 'ilike', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
 		->orWhere('primer_ap', 'ilike', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
@@ -112,78 +134,69 @@ class PersonaController extends Controller{
 
 	public function getDetalleEntrega(Request $request){
 
-		$registro = Persona::select('personas.*', DB::raw('categorias.nombre as categoria_name'))->leftJoin('categorias', 'personas.categoria_id', '=', 'categorias.id')
+		$registro = Persona::select()
+					->leftJoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+					->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
 		            ->where(['personas.id' => $request->id])
 					->first();
 
-		
+		$productos = Producto::select('id','nombre_producto')
+					->where(['status' => 1])->get();
 
 		if($registro){
 
-			$productos = explode(",", $registro->producto);
 			return response([
 				'status'=> true,
 				'response'=> $registro,
 				'productos' => $productos
 			 ],200);
+
 		}else{
 			return response([
 				'status'=> false,
 				'message'=> 'No se encontro resultados!'
 			 ],404);
 		}
-
 	}
 
 
 	public function UpdateEntregaProducto(Request $request){
-
+	
 		$this->validate($request, [
-			'id_registro' => 'required',
-			'status_observacion' => 'required',
+			'id_persona' => 'required',
 			'productos' => 'required'
 		]);
 
+		$check_person = Persona::select()
+					->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+					->where(['personas.id' => $request->id_persona, 'personas.status' => 'ACTIVO'])
+					->first();
 		
-		if($request->status_observacion == 0){
+		if($check_person){
+
+			if($check_person->status == null){
+				$status = '';
+				if(count($request->productos) < 5){
+					$status = 'PENDIENTE-PRODUCTO';
+				}else{
+					$status = 'ENTREGADO';
+				}
 	
-			$counter = count($request->productos);
-			$value_d = '';
-			foreach($request->productos as $value){
-				$value_d = $value.','.$value_d;
-			}
-
-			if( $counter == 5 ){
-
-				Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
-				->update([
-					'usuario_id' => Auth::id(),
-					'fecha_entrega' => date('Y-m-d H:i:s'),
-					'producto' => substr($value_d, 0, -1),
-					'status' => 'ENTREGADO'
-				]);
+				$registro = new RegistroEntrega();
+				$registro->id_usuario = Auth::id();
+				$registro->id_persona = $request->id_persona;
+				$registro->observacion = trim($request->observacion);
+				$registro->status = $status;
+				$registro->save();
 				
+				$producto = new EntregaProducto();
+				foreach($request->productos as $value){
+					$producto->id_registro = $registro->id;
+					$producto->id_producto = $value;
+					$producto->save();
+				}
+
 				$data = Persona::getAllCountData();
-	
-				return response([
-					'status'=> true,
-					'response'=> 'Registro exitoso!',
-					'entregados' => $data->total_entregados,
-					'pendientes' => $data->total_pendientes,
-					'pendientes_producto' => $data->total_pendientes_producto,
-					'observado' => $data->total_observados
-				 ],200);
-
-			}else if($counter < 5){
-
-				Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
-				->update([
-					'usuario_id' => Auth::id(),
-					'fecha_entrega' => date('Y-m-d H:i:s'),
-					'producto' => substr($value_d, 0, -1),
-					'status' => 'PENDIENTE-PRODUCTO'
-				]);
-                $data = Persona::getAllCountData();
 				return response([
 					'status'=> true,
 					'response'=> 'Registro exitoso!',
@@ -195,43 +208,16 @@ class PersonaController extends Controller{
 			}else{
 				return response([
 					'status'=> false,
-					'message'=> 'No se puede registrar mas de 5 productos'
+					'message'=> 'No se pudo guardar recargue la pagina'
 				 ],200);
 			}
-			
-		
- 
-		}else if($request->status_observacion == 1){
 
-			if($request->observacion != '' || $request->observacion != null){
-
-
-			    Persona::where(['id' => $request->id_registro, 'status' => 'PENDIENTE'])
-				->update([
-					'usuario_id' => Auth::id(),
-					'fecha_entrega' => date('Y-m-d H:i:s'),
-					'observacion' => trim($request->observacion),
-					'status' => 'OBSERVADO'
-				]);
-
-				$data = Persona::getAllCountData();
-				return response([
-					'status'=> true,
-					'response'=> 'Registro exitoso!',
-					'entregados' => $data->total_entregados,
-					'pendientes' => $data->total_pendientes,
-					'pendientes_producto' => $data->total_pendientes_producto,
-					'observado' => $data->total_observados
-				 ],200);
-
-			}else{
-				return response([
-					'status'=> false,
-					'message'=> 'El campo observacón es requerido'
-				 ],422);
-			}
+		}else{
+			return response([
+				'status'=> false,
+				'message'=> 'No se encontro ningun resultado resultado o el registro fue anulado'
+			 ],200);
 		}
-
 	}
 
     public function saveNewRegister(Request $request){
@@ -276,29 +262,29 @@ class PersonaController extends Controller{
         $categoria = '';
         $type = '';
         if(trim($request->ganaderia) != '' || trim($request->ganaderia) != null){
-           $id = DB::table('categorias')->select('id')->where('nombre', 'ilike', '%Ganaderia%')->first();
+           $id = DB::table('rubros')->select('id')->where('nombre_rubro', 'ilike', '%Ganaderia%')->first();
            $categoria = $id->id;
            $type = trim($request->ganaderia);
         }else if(trim($request->flores) != '' || trim($request->flores) != null){
-            $id = DB::table('categorias')->select('id')->where('nombre', 'ilike', '%Flores%')->first();
+            $id = DB::table('rubros')->select('id')->where('nombre_rubro', 'ilike', '%Flores%')->first();
             $categoria = $id->id;
             $type = trim($request->flores);
         }else if(trim($request->hortalizas) != '' || trim($request->hortalizas) != null){
-            $id = DB::table('categorias')->select('id')->where('nombre', 'ilike', '%Hortalizas%')->first();
+            $id = DB::table('rubros')->select('id')->where('nombre_rubro', 'ilike', '%Hortalizas%')->first();
             $categoria = $id->id;
             $type = trim($request->hortalizas);
         }else if(trim($request->animales) != '' || trim($request->animales) != null){
-            $id = DB::table('categorias')->select('id')->where('nombre', 'ilike', '%Animales Menores%')->first();
+            $id = DB::table('rubros')->select('id')->where('nombre_rubro', 'ilike', '%Animales Menores%')->first();
             $categoria = $id->id;
             $type = trim($request->animales);
         }else if(trim($request->forraje) != '' || trim($request->forraje) != null){
-            $id = DB::table('categorias')->select('id')->where('nombre', 'ilike', '%Forraje%')->first();
+            $id = DB::table('rubros')->select('id')->where('nombre_rubro', 'ilike', '%Forraje%')->first();
             $categoria = $id->id;
             $type = trim($request->forraje);
         }else{
             return response([
                 'status'=> false,
-                'message'=> 'El registro no tiene ningun dato en categoria'
+                'message'=> 'El registro no tiene ningun dato en rubros'
              ],422);
         }
 
@@ -320,7 +306,7 @@ class PersonaController extends Controller{
         $people->distrito = trim($request->distrito);
         $people->sub_central = trim($request->sud_central);
         $people->sindicato = trim($request->sindicato);
-        $people->categoria_id = $categoria;
+        $people->rubro_id = $categoria;
         $people->tipo = $type;
         $people->ubicacion = $ubicacion;
 

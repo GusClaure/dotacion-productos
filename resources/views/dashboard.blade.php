@@ -50,10 +50,10 @@
         <div class="form-group col-md-12" style="text-align: center;">
             <h3 for="ausenciap1">PUNTOS Y COORDENADAS</h3>
             <select class="form-control col-sm-12" id="filter-count" style="text-align: center;">
-                <option value="total">TOTAL {{ $data_count->total }}</option>
-                <option value="entregados">ENTREGADOS {{ $data_count->total_entregados }}</option>
-                <option value="pendientes">PENDIENTES {{ $data_count->total_pendientes }}</option>
-                <option value="observados">OBSERVADOS {{ $data_count->total_observados }}</option>
+                <option value="total">TOTAL {{ $data_count->total ?? '' }}</option>
+                <option value="entregados">ENTREGADOS {{ $data_count->total_entregados ?? ''}}</option>
+                <option value="pendientes">PENDIENTES {{ $data_count->total_pendientes ?? ''}}</option>
+                <option value="pendientes_productos">PENDIENTES DE PRODUCTOS {{ $data_count->total_pendientes_producto ?? ''}}</option>
             </select>
             <div id="map-eventos-sociales" class="col-sm-12" style="height: 402px; margin-top: 20px;"></div>
         </div>
@@ -188,7 +188,8 @@ $(document).ready(function() {
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
         });
-    } else if ('{{$value->status}}' == 'PENDIENTE') {
+    } else if ('{{$value->status}}' == null || '{{$value->status}}' == '') {
+        
         var valueIcon = new L.Icon({
             iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-red.png',
             shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
@@ -197,7 +198,7 @@ $(document).ready(function() {
             popupAnchor: [1, -34],
             shadowSize: [41, 41]
         });
-    } else if ('{{$value->status}}' == 'OBSERVADO') {
+    } else if ('{{$value->status}}' == 'PENDIENTE-PRODUCTO') {
         var valueIcon = new L.Icon({
             iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-orange.png',
             shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
@@ -216,15 +217,27 @@ $(document).ready(function() {
     mymap.addLayer(marker);
     nombre = '{{ $value->nombre." ".$value->primer_ap. " ".$value->segundo_ap }}';
 
-    marker.bindPopup('<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
+    if('{{$value->status}}' == null || '{{$value->status}}' == ''){
+        marker.bindPopup('<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
         '<span class="my-div-span"><b>Nombre: </b>' + nombre + '<br>' +
         '<b>CI: </b>{{ $value->ci }}<br>' +
         '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
-        '<b>Rubro: </b>{{ $value->categoria_name }}<br>' +
+        '<b>Rubro: </b>{{ $value->nombre_rubro }}<br>' +
+        '<b>Tipo: </b>{{ $value->tipo }}<br>' +
+        '<b>Estado:  PENDIENTE</b><br>' +
+        '</span>');
+    }else{
+        marker.bindPopup('<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
+        '<span class="my-div-span"><b>Nombre: </b>' + nombre + '<br>' +
+        '<b>CI: </b>{{ $value->ci }}<br>' +
+        '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
+        '<b>Rubro: </b>{{ $value->nombre_rubro }}<br>' +
         '<b>Tipo: </b>{{ $value->tipo }}<br>' +
         '<b>Fecha: </b>{{ $value->fecha_entrega }}<br>' +
         '<b>Estado:  {{ $value->status }}</b><br>' +
         '</span>');
+    }
+
 
     '@endforeach'
 
@@ -253,6 +266,7 @@ $(document).ready(function() {
                   'duration': 3});
                     $.each(data.response, function(index, value) {
                         ubications = value.ubicacion.split(',');
+                        console.log(value.status);
                         if (value.status == 'ENTREGADO') {
                             var valueIcon = new L.Icon({
                                 iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-green.png',
@@ -262,7 +276,7 @@ $(document).ready(function() {
                                 popupAnchor: [1, -34],
                                 shadowSize: [41, 41]
                             });
-                        } else if (value.status == 'PENDIENTE') {
+                        } else if (value.status == '' || value.status == null) {
                             var valueIcon = new L.Icon({
                                 iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-red.png',
                                 shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
@@ -271,7 +285,7 @@ $(document).ready(function() {
                                 popupAnchor: [1, -34],
                                 shadowSize: [41, 41]
                             });
-                        } else if (value.status == 'OBSERVADO') {
+                        } else if (value.status == 'PENDIENTE-PRODUCTO') {
                             var valueIcon = new L.Icon({
                                 iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-orange.png',
                                 shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
@@ -290,18 +304,31 @@ $(document).ready(function() {
                         mymap.addLayer(marker);
                         nombre = value.nombre+" "+ value.primer_ap +" "+ value.segundo_ap;
 
-                        marker.bindPopup(
+                        if(value.status == '' || value.status == null ){
+                            marker.bindPopup(
                             '<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
                             '<span class="my-div-span"><b>Nombre: </b>' +
                             nombre + '<br>' +
                             '<b>CI: </b>'+ value.ci +'<br>' +
                             '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
-                            '<b>Rubro: </b>'+value.categoria_name + '<br>' +
+                            '<b>Rubro: </b>'+value.nombre_rubro + '<br>' +
+                            '<b>Tipo: </b>'+ value.tipo +'<br>' +
+                            '<b>Estado:  PENDIENTE</b><br>' +
+                            '</span>');
+                        }else{
+                            marker.bindPopup(
+                            '<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
+                            '<span class="my-div-span"><b>Nombre: </b>' +
+                            nombre + '<br>' +
+                            '<b>CI: </b>'+ value.ci +'<br>' +
+                            '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
+                            '<b>Rubro: </b>'+value.nombre_rubro + '<br>' +
                             '<b>Tipo: </b>'+ value.tipo +'<br>' +
                             '<b>Fecha: </b>'+ value.fecha_entrega + '<br>' +
                             '<b>Estado:  '+value.status +'</b><br>' +
                             '</span>');
-
+                        }
+                       
                     });
                 }
             }

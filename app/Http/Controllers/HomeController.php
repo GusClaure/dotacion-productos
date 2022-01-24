@@ -28,7 +28,7 @@ class HomeController extends Controller
 
         if(Auth::user()->role == 'ADMIN'){
            
-            //dd(Persona::getAllPersonWith('Maica Sud', 'ENTREGADO'));
+            
             return view('dashboard', [
                 'data_count' => Persona::getAllCountData(),
                 'data_persons' => Persona::getAllPersonWith()

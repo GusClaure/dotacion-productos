@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Producto extends Model
+class EntregaProducto extends Model
 {
+
     public $timestamps = false;
-    
+    protected $table = 'entregas_productos';
+
     protected $fillable = [
         'id',
-        'nombre_productos',
-        'cantidad',
-        'unidad'
+        'id_registro',
+        'id_producto',
+        'status'
     ];
 
-    protected $hiden = ['fecha_registro'];
+    protected $hiden = [];
 }
