@@ -75,6 +75,7 @@ class PersonaController extends Controller{
 	}
 	
 	
+	
 	return response([
 		'status'=> true,
 		'response'=> $registro
