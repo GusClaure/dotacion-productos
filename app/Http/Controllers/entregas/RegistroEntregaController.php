@@ -4,15 +4,16 @@ namespace App\Http\Controllers\entregas;
 
 
 
+use PDF;
 use App\Models\Persona;
 use App\Models\Producto;
-use PDF;
 //use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use App\Models\EntregaProducto;
 use App\Models\RegistroEntrega;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 
@@ -201,17 +202,23 @@ class RegistroEntregaController extends Controller{
 		->leftjoin('rubros', 'rubros.id', '=', 'personas.rubro_id')
 		->where('registros_entregas.id_persona', $id_persona)
 		->get();
-		//dd($find_data);
+	
 		$image = base64_encode(file_get_contents(public_path('argon/img/logogamc.png')));
+		$qr_image = QrCode::size(250)->format('svg')
+					//->backgroundColor(255,255,204)
+					->errorCorrection('H')
+					->generate('https://innova.cochabamba.bo/api/cheking-document/'.$find_data[0]->uuid);
 
-	$pdf = PDF::loadView('detallePdf', [
-		    'image' => $image,
-			'title' => 'FORMULARIO DE ENTREGA DE INSUMOS AGROPECUARIOS NRO '.$find_data[0]->nro_formulario,
-			'data_person' => $find_data,
-			'name_person' => mb_strtoupper(trim($find_data[0]->nombre.' '.$find_data[0]->primer_ap.' '.$find_data[0]->segundo_ap))
-			])
-			->setPaper('a4', 'letter')
-			->setWarnings(false);
+						$pdf = PDF::loadView('detallePdf', [
+							'image' => $image,
+							'title' => 'FORMULARIO DE ENTREGA DE INSUMOS AGROPECUARIOS NRO '.$find_data[0]->nro_formulario,
+							'data_person' => $find_data,
+							'name_person' => mb_strtoupper(trim($find_data[0]->nombre.' '.$find_data[0]->primer_ap.' '.$find_data[0]->segundo_ap)),
+							'qr_image' => base64_encode($qr_image)
+							])
+							->setPaper('a4', 'letter')
+							->setWarnings(false);
+					
 	return $pdf->stream('FORMULARIO_'.$find_data[0]->nro_formulario.'.pdf');
 	
 	}

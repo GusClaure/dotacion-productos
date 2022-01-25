@@ -50,8 +50,8 @@
 <body>
 
     <div style="position: relative;">
-    <img style="position: absolute; left: 0px;" src="data:image/png;base64,{{ $image }}" alt="Logo" height="75px" >
-    <img style="position: absolute; right: 0px;" src="data:image/png;base64,{{ $image }}" alt="Logo" height="75px" >
+        <img style="position: absolute; left: 0px;" src="data:image/png;base64,{{ $image }}" alt="Logo" height="75px">
+        <img style="position: absolute; right: 0px;" src="data:image/png;base64,{{ $image }}" alt="Logo" height="75px">
     </div>
 
     <div style="text-align: center;">
@@ -76,8 +76,10 @@
                 <b>BENEFICIARIO(A)</b>
             </div>
             <div class="text-beneficiario">
-                <p style="padding-right: 15px; padding-left: 15px; position:relative; top:-10px;">Yo <b>{{ $name_person ?? '' }}</b>,
-                    con C.I. <b>{{ $data_person[0]->ci ?? '' }}</b>, declaro recibir <b>DOTACIÓN EXCEPCIONAL DE INSUMOS AGROPECUARIOS</b>, del
+                <p style="padding-right: 15px; padding-left: 15px; position:relative; top:-10px;">Yo
+                    <b>{{ $name_person ?? '' }}</b>,
+                    con C.I. <b>{{ $data_person[0]->ci ?? '' }}</b>, declaro recibir <b>DOTACIÓN EXCEPCIONAL DE INSUMOS
+                        AGROPECUARIOS</b>, del
                     Gobierno Autónomo Municipal de Cochabamba, en cumplimiento a la Ley Municipal Nro. 727/2020 de fecha
                     2 de Octubre del 2020 y la ley N.º 1307 del 29 de Junio del 2020 con el objetivo de reactivar el
                     aparato productivo local (Agropecuario), fortalecer a los productores del Municipio, de acuerdo al
@@ -96,20 +98,20 @@
                     <th>CANTIDAD</th>
                 </tr>
 
-                @for ($i = 1; $i <= 5; $i++)
-                <tr>
+                @for ($i = 1; $i <= 5; $i++) <tr>
                     <td>{{ $i }}</td>
-                    <td style="text-align: left !important;"><b>{{ $data_person[($i - 1)]->nombre_producto ?? '' }}</b></td>
+                    <td style="text-align: left !important;"><b>{{ $data_person[($i - 1)]->nombre_producto ?? '' }}</b>
+                    </td>
                     <td>ni idea</td>
                     <td>6.128,00</td>
-                </tr>
-                   
-                @endfor
-          
-                
+                    </tr>
+
+                    @endfor
+
+
             </table>
         </div>
-      
+
         <!-- texto pie de pagina -->
         <div style="text-align: justify;">
             <p>El presente formulario se constituye en una declaración jurada, en caso de comprobarse que los datos
@@ -139,9 +141,13 @@
             </div>
         </div>
 
+        <div>
+            <img style="position: absolute; left: 42%; top: 78%;" src="data:image/png;base64,{{ $qr_image ?? ''}}" alt="Logo"
+                height="120px">
+        </div>
 
         <div style="position:relative;">
-            <p style="position: absolute; left: 250px; top: -30px;">Cochabamba 25 de Enero del 2022</p>
+            <p style="position: absolute; left: 250px; top: -20px;">Cochabamba 25 de Enero del 2022</p>
         </div>
     </div>
 </body>

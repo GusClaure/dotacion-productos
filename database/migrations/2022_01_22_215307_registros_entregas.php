@@ -16,6 +16,7 @@ class RegistrosEntregas extends Migration
     {
         Schema::create('registros_entregas', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->uuid('uuid')->unique()->default(DB::raw('gen_random_uuid()'));
             $table->unsignedBigInteger('id_persona');
             $table->text('observacion')->nullable();
             $table->timestamp('fecha_registro')->default(DB::raw('CURRENT_TIMESTAMP'));
