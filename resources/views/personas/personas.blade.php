@@ -41,114 +41,31 @@
                         </thead>
 
                     </table>
-
-
-
-
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
-
-<!-- Modal -->
-<div class="modal fade" id="modal-entrega" data-backdrop="static" tabindex="-1" role="dialog"
+<!-- Modal complementacion de entrega de producto -->
+<div class="modal fade" id="modal-show-pdf" data-backdrop="static" tabindex="-1" role="dialog"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="title-modal"></h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <div class="modal-body">
-
-
-                <div class="form-group">
-                    <label>Nombre Completo</label>
-                    <input type="text" class="form-control" id="name" disabled>
-                </div>
-
-
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label>Carnet Identidad Nº</label>
-                            <input type="text" class="form-control" id="ci" disabled>
-                        </div>
-                        <div class="col-sm-6">
-                            <label>Expedido</label>
-                            <input type="text" class="form-control" id="expedido" disabled>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <label>Nº Celular</label>
-                            <input type="text" class="form-control" id="celular" disabled>
-                        </div>
-                        <div class="col-sm-4">
-                            <label>Distrito</label>
-                            <input type="text" class="form-control" id="distrito" disabled>
-                        </div>
-                        <div class="col-sm-4">
-                            <label>Sub Central</label>
-                            <input type="text" class="form-control" id="central" disabled>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label>Rubro</label>
-                            <input type="text" class="form-control" id="rubro" disabled>
-                        </div>
-                        <div class="col-sm-6">
-                            <label>Tipo</label>
-                            <input type="text" class="form-control" id="tipo" disabled>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" id="div-entregados" style="display: none;">
-                    <div style="text-align: center; color: #f5365c;">
-                        <label>Productos ya Entregados</label>
-                    </div>
-                    <div id="productos-entregados">
-                    </div>
-                </div>
-
-                <div class="form-group" id="s-observacion">
-                    <label>Productos</label>
-                    <select class="form-control" multiple="multiple" id="productos-select">
-
-                    </select>
-                </div>
-
-                <div class="form-group" id="txt_obs">
-                    <label>Observación</label>
-                    <textarea class="form-control" id="observacion"
-                        placeholder="LLenar este campo solo si es necesario" rows="5"></textarea>
-                </div>
-
-
-
+            <embed id="frame" width="100%" height="450">
+            <!-- <iframe id="frame" frameborder="0" height="100%" width="100%"></iframe> -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btn-entregar-producto">Entregar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
+@include('personas.modalEntregaProducto')
+
+@include('personas.modalComplementacionProducto')
 
 @include('layouts.footers.auth')
 </div>
@@ -190,6 +107,14 @@ $(document).ready(function() {
         tags: true
     });
 
+    $('#productos-select_con').select2({
+        placeholder: 'Seleccione las opciones',
+        allowClear: true,
+        // multiple: true,
+        width: '100%',
+        tags: true
+    });
+
 
 
 
@@ -222,8 +147,9 @@ $(document).ready(function() {
                     $('#btn-entregar-producto').val(btn_id);
                     $("#productos-select").empty();
                     var productos_data = '';
-                    $.each(data.productos, function(index, value){
-                        productos_data = productos_data + '<option value="'+ value.id +'">'+value.nombre_producto+'</option>';
+                    $.each(data.productos, function(index, value) {
+                        productos_data = productos_data + '<option value="' + value
+                            .id + '">' + value.nombre_producto + '</option>';
                     });
                     $("#productos-select").append(productos_data);
                     $('#modal-entrega').modal('show');
@@ -235,52 +161,82 @@ $(document).ready(function() {
 
 
     $(document).on('click', '#btn-entregar-producto', function() {
-        $.ajax({
-            type: "POST",
-            url: "{{ route('entrega.producto') }}",
-            data: {
-                _token: "{{ csrf_token() }}",
-                id_persona: $(this).val(),
-                productos: $('#productos-select').val(),
-                observacion: $('#observacion').val()
+        $('#modal-entrega').modal('hide');
+        value = $(this).val();
+        swal({
+                title: "Esta seguro de guardar el registro?",
+                text: "Si continua, el registro no podra revertirse!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-success",
+                confirmButtonText: "Continuar",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false,
+                closeOnCancel: false
             },
-            success: function(data) {
-                if (data.status == true) {
-                    console.log(data);
-                    $('#modal-entrega').modal('hide');
-                    $('#list-registro').DataTable().ajax.reload();
-                    $('#num-entregados').text(data.entregados);
-                    $('#num-pendientes').text(data.pendientes);
-                    $('#num-producto-pending').text(data.pendientes_producto);
-                    swal("OK!", data.response, "success")
-                }else if(data.status == true){
-                    swal({
-                    title: "Ups!",
-                    text: data.message,
-                    type: "warning",
-                    timer: 3000
-                    }),
-                    function () {
-                        location.reload(true);
-                    };
-                }
-            },
-            error: function(xhr, textStatus, errorThrown){
-                swal({
-                    title: "Ups!",
-                    text: 'Procto es requerido!',
-                    type: "warning",
-                    timer: 2000
+            function(isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('entrega.producto') }}",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id_persona: value,
+                            productos: $('#productos-select').val(),
+                            observacion: $('#observacion').val()
+                        },
+                        success: function(data) {
+                            if (data.status == true) {
+                                $('#modal-entrega').modal('hide');
+                                $('#list-registro').DataTable().ajax.reload();
+                                $('#num-entregados').text(data.entregados);
+                                $('#num-pendientes').text(data.pendientes);
+                                $('#num-producto-pending').text(data
+                                    .pendientes_producto);
+                                swal("OK!", data.response, "success");
+                            } else if (data.status == false) {
+                                swal({
+                                        title: "Ups!",
+                                        text: data.message,
+                                        type: "warning",
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    }),
+                                    function() {
+                                        location.reload(true);
+                                    };
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            swal({
+                                title: "Ups!",
+                                text: 'Producto es requerido!',
+                                type: "warning",
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+
+                            $('#modal-entrega').modal('show');
+
+                        }
                     });
-                
-            } 
-        });
+                } else {
+
+                    swal.close();
+                    $('#modal-entrega').modal('show');
+                }
+            });
+
     });
     //
 
 
     $(document).on('click', '#btn-ver-detalle', function() {
-        alert('El modulo se encuentra en desarrollo');
+        $('#modal-show-pdf').modal('show');
+        var id_persona = $(this).val();
+        $("#frame").attr("src", '/entregas/detalle-pdf/'+id_persona);
+        // $('#show-pdf')
+
     });
 
     $(document).on('click', '#btn-observado', function() {
@@ -351,7 +307,7 @@ $(document).ready(function() {
                 sortable: false,
                 "render": function(data, type, row, meta) {
                     var value = meta.row + meta.settings._iDisplayStart +
-                    1; //contador de numeros.
+                        1; //contador de numeros.
                     return value.toString();
                 }
             },
@@ -411,9 +367,9 @@ $(document).ready(function() {
                     }
                     if (row.status == 'PENDIENTE-PRODUCTO') {
                         return '<button value="' + row.id +
-                            '" type="button" title="Entregar Producto Agropecuario Faltante" id="btn-pendiente-producto" class="btn btn-danger"><i class="fas fa-project-diagram"></i></button>'+
+                            '" type="button" title="Entregar Producto Agropecuario Faltante" id="btn-pendiente-producto" class="btn btn-danger"><i class="fas fa-project-diagram"></i></button>' +
                             '<button value="' + row.id +
-                            '" type="button" title="Detalle de la entrega" id="btn-detalle-entrega" class="btn btn-success"><i class="fas fa-eye"></i></button>';
+                            '" type="button" title="Detalle de la entrega" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>';
                     } else if (row.status == 'ENTREGADO') {
                         return '<button value="' + row.id +
                             '" type="button" title="Ver detalle" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>';
@@ -511,36 +467,39 @@ $(document).ready(function() {
                 id_persona: $(this).val(),
             },
             success: function(data) {
-                console.log(data.response);
-                if(data.status == true){
+                if (data.status == true) {
                     one_data = data.response[0];
-                    $('#title-modal').text(
-                        'COMPLEMENTACION DE ENTREGA DE PRODUCTO AGROPECUARIO FORMULARIO N.º ' + one_data.nro_formulario);
-                    $('#name').val($.trim(one_data.nombre + ' ' + one_data.primer_ap + ' ' + one_data.segundo_ap));
-                    $('#ci').val(one_data.ci);
-                    $('#expedido').val(one_data.expedido);
-                    $('#celular').val(one_data.nro_cel);
-                    $('#distrito').val(one_data.distrito);
-                    $('#central').val(one_data.sub_central);
-                    $('#rubro').val(one_data.nombre_rubro);
-                    $('#tipo').val(one_data.tipo);
-                    $('#btn-entregar-producto').val(btn_id);
-                    $('#observacion').val(one_data.observacion);
-                    $("#productos-select").empty();
-                    $("#productos-entregados").empty();
-                     var productos_entregados = '';
-                    $.each(data.response, function(index, value){
-                        productos_entregados = productos_entregados + '<label class="form-control">'+ (index + 1) + '.- '+ value.nombre_producto+'</label>';
+                    $('#title-modal_con').text(
+                        'COMPLEMENTACION DE ENTREGA DE PRODUCTO AGROPECUARIO FORMULARIO N.º ' +
+                        one_data.nro_formulario);
+                    $('#name_con').val($.trim(one_data.nombre + ' ' + one_data.primer_ap +
+                        ' ' + one_data.segundo_ap));
+                    $('#ci_con').val(one_data.ci);
+                    $('#expedido_con').val(one_data.expedido);
+                    $('#celular_con').val(one_data.nro_cel);
+                    $('#distrito_con').val(one_data.distrito);
+                    $('#central_con').val(one_data.sub_central);
+                    $('#rubro_con').val(one_data.nombre_rubro);
+                    $('#tipo_con').val(one_data.tipo);
+                    $('#btn-complementacion-producto').val(btn_id);
+                    $('#observacion_con').val(one_data.observacion);
+                    $("#productos-select_con").empty();
+                    $("#productos-entregados_con").empty();
+                    var productos_entregados = '';
+                    $.each(data.response, function(index, value) {
+                        productos_entregados = productos_entregados +
+                            '<label class="form-control">' + (index + 1) + '.- ' +
+                            value.nombre_producto + '</label>';
                     });
                     var productos_data = '';
-                    $.each(data.productos, function(index, value){
-                        productos_data = productos_data + '<option value="'+ value.id +'">'+value.nombre_producto+'</option>';
+                    $.each(data.productos, function(index, value) {
+                        productos_data = productos_data + '<option value="' + value
+                            .id + '">' + value.nombre_producto + '</option>';
                     });
-                    $("#productos-entregados").append(productos_entregados);
-                    $("#productos-select").append(productos_data);
-                    $('#modal-entrega').modal('show');
+                    $("#productos-entregados_con").append(productos_entregados);
+                    $("#productos-select_con").append(productos_data);
+                    $('#modal-complementacion-producto').modal('show');
                 }
-                
 
             }
         });
@@ -548,5 +507,64 @@ $(document).ready(function() {
 
 
     
+    $(document).on('click', '#btn-complementacion-producto', function() {
+        id_persona = $(this).val();
+        $('#modal-complementacion-producto').modal('hide');
+        swal({
+                title: "Esta seguro de guardar el registro?",
+                text: "Si continua, el registro no podra revertirse!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Continuar",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "PUT",
+                        url: "{{ route('update.entrega') }}",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id_persona: id_persona,
+                            producto: $('#productos-select_con').val(),
+                            observacion: $('#observacion_con').val()
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            if (data.status == true) {
+                                $('#modal-complementacion-producto').modal('hide');
+                                $('#list-registro').DataTable().ajax.reload();
+                                $('#num-entregados').text(data.entregados);
+                                $('#num-pendientes').text(data.pendientes);
+                                $('#num-producto-pending').text(data
+                                    .pendientes_producto);
+                                swal("OK!", data.response, "success");
+                            } else if (data.status == false) {
+                                $('#modal-complementacion-producto').modal('show');
+                                swal("Ups!", data.message, "warning");
+
+
+                            }
+                        },
+                        error: function(err) {
+                            swal("Ups!", err.responseJSON.errors.producto[0],
+                            "warning");
+                            $('#modal-complementacion-producto').modal('show');
+                        }
+                    });
+                } else {
+                    swal.close();
+                    $('#modal-complementacion-producto').modal('show');
+                }
+            });
+    });
+
+
+
+
+
 });
 </script>

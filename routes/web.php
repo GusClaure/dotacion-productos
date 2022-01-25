@@ -44,12 +44,13 @@ Route::group(['middleware' => 'auth'], function () {
 	 Route::post('personas/get-detalle', 'App\Http\Controllers\personas\PersonaController@getDetalleEntrega')->name('personas.detalle');
 	 
 	 Route::post('personas/filter', 'App\Http\Controllers\personas\PersonaController@personFilter')->name('personas.filter');
-	 Route::put('personas/update-entrega', 'App\Http\Controllers\personas\PersonaController@updateEntregaProducto')->name('update.entrega');
+	 //Route::put('personas/update-entrega', 'App\Http\Controllers\personas\PersonaController@updateEntregaProducto')->name('update.entrega');
 	 
 	//entragas controller
 	Route::post('entregas/entrega-producto', 'App\Http\Controllers\entregas\RegistroEntregaController@RegistroEntregaProducto')->name('entrega.producto');
 	Route::post('entregas/entrega-detalle', 'App\Http\Controllers\entregas\RegistroEntregaController@getDetalleEntregaCompl')->name('detalle.entrega');
-	 
+	Route::put('entregas/complemento-producto', 'App\Http\Controllers\entregas\RegistroEntregaController@updateEntregaProductoComplemento')->name('update.entrega');
+	Route::get('entregas/detalle-pdf/{id_persona}', 'App\Http\Controllers\entregas\RegistroEntregaController@generatePdfDetalleEntrega');
 	
 });
 
