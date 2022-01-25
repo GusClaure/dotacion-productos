@@ -205,7 +205,7 @@ class RegistroEntregaController extends Controller{
 	
 		$image = base64_encode(file_get_contents(public_path('argon/img/logogamc.png')));
 		$qr_image = QrCode::size(250)->format('svg')
-					//->backgroundColor(255,255,204)
+					
 					->errorCorrection('H')
 					->generate('https://innova.cochabamba.bo/api/cheking-document/'.$find_data[0]->uuid);
 
@@ -219,6 +219,7 @@ class RegistroEntregaController extends Controller{
 							->setPaper('a4', 'letter')
 							->setWarnings(false);
 					
+
 	return $pdf->stream('FORMULARIO_'.$find_data[0]->nro_formulario.'.pdf');
 	
 	}
