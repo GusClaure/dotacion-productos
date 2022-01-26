@@ -8031,7 +8031,15 @@ button.bg-dark:focus
 
 .bg-default
 {
-    background-color: #172b4d !important;
+    
+    background: url('../img/index.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover; */
 }
 
 a.bg-default:hover,

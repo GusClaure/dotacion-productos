@@ -20,6 +20,8 @@ class EntregasProductos extends Migration
             $table->unsignedBigInteger('id_registro');
             $table->unsignedBigInteger('id_producto');
             $table->timestamp('fecha_entrega')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('fecha_anulacion')->nullable();
+            $table->integer('usuario_anulo')->nullable();
             $table->string('status')->default('ENTREGADO');
         
          

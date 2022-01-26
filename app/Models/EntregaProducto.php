@@ -17,6 +17,8 @@ class EntregaProducto extends Model
         'id_registro',
         'id_producto',
         'fecha_entrega',
+        'fecha_anulacion',
+        'usuario_anulo',
         'status'
     ];
 

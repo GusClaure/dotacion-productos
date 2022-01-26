@@ -1,5 +1,5 @@
 
-<nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
+<nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light" style="background-color: rgb(235, 232, 232);" id="sidenav-main">
     <div class="container-fluid">
         <!-- Toggler -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
                         <ul class="nav nav-sm flex-column">
                        <div style="display: none;">{{ $sitio = $sitio ?? ''; }}</div>
                         @if($sitio == 'entregados')
-                            <li class="nav-item" style="background-color: #c4f7cd;">
+                            <li class="nav-item" style="background-color: rgb(161, 223, 212)">
                                 <a class="nav-link" href="{{ route('lista.entregados') }}">
                                     <i class="fas fa-address-card"></i>{{ __('Entregados') }} 
                                 </a>
@@ -90,7 +90,7 @@
 
                             @if($sitio == 'pendientes')
                             
-                            <li class="nav-item" style="background-color: #c4f7cd;">
+                            <li class="nav-item" style="background-color: rgb(161, 223, 212)">
                                 <a class="nav-link" href="{{ route('lista.pendientes') }}">
                                     <i class="fas fa-user-edit"></i>{{ __('Pendientes') }}
                                 </a>
@@ -105,7 +105,7 @@
                             @endif
 
                             @if($sitio == 'todos')
-                            <li class="nav-item" style="background-color: #c4f7cd;">
+                            <li class="nav-item" style="background-color:rgb(161, 223, 212)">
                                 <a class="nav-link" href="{{ route('persona.get-all') }}">
                                     <i class="fas fa-coins"></i>{{ __('Todos') }}
                                 </a>

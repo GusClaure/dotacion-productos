@@ -56,6 +56,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('entregas/entrega-detalle', 'App\Http\Controllers\entregas\RegistroEntregaController@getDetalleEntregaCompl')->name('detalle.entrega');
 	Route::put('entregas/complemento-producto', 'App\Http\Controllers\entregas\RegistroEntregaController@updateEntregaProductoComplemento')->name('update.entrega');
 	Route::get('entregas/detalle-pdf/{id_persona}', 'App\Http\Controllers\entregas\RegistroEntregaController@generatePdfDetalleEntrega');
+
+	Route::delete('entregas/anular-entrega', 'App\Http\Controllers\entregas\RegistroEntregaController@anularEntregaProducto')->name('anular.entrega');
 	
 
 	Route::get('personas/export-csv', 'App\Http\Controllers\personas\PersonaController@exporCsv');//->name('personas.export.csv');

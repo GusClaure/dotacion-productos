@@ -1,9 +1,9 @@
 <div class="row align-items-center justify-content-xl-between">
     <div class="col-xl-6">
-        <div class="copyright text-center text-xl-left text-muted">
-            &copy; {{ now()->year }} <a href="https://cochabamba.bo/" class="font-weight-bold ml-1" target="_blank">Gobierno Autonomo de Cochabamba</a> &amp;
-            <a href="https://innova.cochabamba.bo/login" class="font-weight-bold ml-1" target="_blank">DDSI</a>
-        </div>
+        {{-- <div class="copyright text-center text-xl-left text-muted" style="color: rgb(250, 249, 248)">
+            &copy; {{ now()->year }} <a style="color: cornsilk !important" href="https://cochabamba.bo/" class="font-weight-bold ml-1" target="_blank">Gobierno Autonomo de Cochabamba</a> &amp;
+            <a style="color: rgba(251, 250, 246, 0.842) !important" href="https://innova.cochabamba.bo/login" class="font-weight-bold ml-1" target="_blank">DDSI</a>
+        </div> --}}
     </div>
     {{-- <div class="col-xl-6">
         <ul class="nav nav-footer justify-content-center justify-content-xl-end">

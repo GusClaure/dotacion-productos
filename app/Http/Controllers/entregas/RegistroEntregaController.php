@@ -38,7 +38,6 @@ class RegistroEntregaController extends Controller{
 
 
 	public function GetAllRegisterDatatableEntregados(Request $request){
-
         
         $registros = Persona::select('personas.*', 'registros_entregas.status')
 		->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
@@ -164,10 +163,11 @@ class RegistroEntregaController extends Controller{
 				->leftjoin('personas', 'personas.id', '=', 'registros_entregas.id_persona')
 				->leftjoin('productos', 'productos.id', '=', 'entregas_productos.id_producto')
 				->leftjoin('rubros', 'rubros.id', '=', 'personas.rubro_id')
-				->where('registros_entregas.id_persona', $request->id_persona)
+				->where(['registros_entregas.id_persona' => $request->id_persona, 'entregas_productos.status' => 'ENTREGADO' ])
 				->get();
 
-		$id_producto = [];		
+		if(isset($value[0]->id)){
+			$id_producto = [];		
 		foreach($value as $index){
 			array_push($id_producto,$index->id_producto);
 		}
@@ -182,7 +182,26 @@ class RegistroEntregaController extends Controller{
 					'response'=> $value,
 					'productos' => $productos
 				 ],200);
-		
+		}else{
+
+			$value = RegistroEntrega::select()
+		        ->leftjoin('entregas_productos', 'entregas_productos.id_registro', '=', 'registros_entregas.id')
+				->leftjoin('personas', 'personas.id', '=', 'registros_entregas.id_persona')
+				->leftjoin('productos', 'productos.id', '=', 'entregas_productos.id_producto')
+				->leftjoin('rubros', 'rubros.id', '=', 'personas.rubro_id')
+				->where(['registros_entregas.id_persona' => $request->id_persona, 'entregas_productos.status' => 'ANULADO' ])
+				->get();
+
+				$productos = Producto::select('id', 'nombre_producto')
+				->where(['status' => 1])
+				->get();
+
+		return response([
+					'status'=> true,
+					'response'=> $value,
+					'productos' => $productos
+				 ],200);
+		}
 		
 	}
 
@@ -200,8 +219,9 @@ class RegistroEntregaController extends Controller{
 							->where(['id_persona' => $request->id_persona])
 							->first();
 		
+		
 		if($registro_entrega){
-			$total = EntregaProducto::where('id_registro', $registro_entrega->id)->count() + count($request->producto); 
+			$total = EntregaProducto::where(['id_registro' => $registro_entrega->id, 'status' => 'ENTREGADO'])->count() + count($request->producto); 
 			
 			if($total == 5){
 				
@@ -225,7 +245,6 @@ class RegistroEntregaController extends Controller{
 					->update(['status' => 'ENTREGADO']);
 				}
 			
-
 				$data = Persona::getAllCountData();
 				return response([
 						'status'=> true,
@@ -245,6 +264,13 @@ class RegistroEntregaController extends Controller{
 					$producto->id_producto = $value;
 					$producto->save();
 				}
+
+
+				if($registro_entrega->status == 'ANULADO'){
+					RegistroEntrega::where(['id' => $registro_entrega->id])
+					->update(['status' => 'PENDIENTE-PRODUCTO']);
+				}
+
 
 				$data = Persona::getAllCountData();
 				return response([
@@ -274,12 +300,40 @@ class RegistroEntregaController extends Controller{
 		->leftjoin('personas', 'personas.id', '=', 'registros_entregas.id_persona')
 		->leftjoin('productos', 'productos.id', '=', 'entregas_productos.id_producto')
 		->leftjoin('rubros', 'rubros.id', '=', 'personas.rubro_id')
-		->where('registros_entregas.id_persona', $id_persona)
+		->where(['registros_entregas.id_persona' => $id_persona, 'entregas_productos.status' => 'ENTREGADO'])
 		->get();
 	
+		
+		$mes = '';
+		if(date('m') == '01'){
+			$mes = 'Enero';
+		}else if(date('m') == '02'){
+			$mes = 'Febrero';
+		}else if(date('m') == '03'){
+			$mes = 'Marzo';
+		}else if(date('m') == '04'){
+			$mes = 'Abril';
+		}else if(date('m') == '05'){
+			$mes = 'Mayo';
+		}else if(date('m') == '06'){
+			$mes = 'Junio';
+		}else if(date('m') == '07'){
+			$mes = 'Julio';
+		}else if(date('m') == '08'){
+			$mes = 'Agosto';
+		}else if(date('m') == '09'){
+			$mes = 'Septiembre';
+		}else if(date('m') == '10'){
+			$mes = 'Octubre';
+		}else if(date('m') == '11'){
+			$mes = 'Noviembre';
+		}else if(date('m') == '12'){
+			$mes = 'Diciembre';
+		}
+		
+
 		$image = base64_encode(file_get_contents(public_path('argon/img/logogamc.png')));
 		$qr_image = QrCode::size(250)->format('svg')
-					
 					->errorCorrection('H')
 					->generate('https://innova.cochabamba.bo/api/cheking-document/'.$find_data[0]->uuid);
 
@@ -288,7 +342,9 @@ class RegistroEntregaController extends Controller{
 							'title' => 'FORMULARIO DE ENTREGA DE INSUMOS AGROPECUARIOS NRO '.$find_data[0]->nro_formulario,
 							'data_person' => $find_data,
 							'name_person' => mb_strtoupper(trim($find_data[0]->nombre.' '.$find_data[0]->primer_ap.' '.$find_data[0]->segundo_ap)),
-							'qr_image' => base64_encode($qr_image)
+							'qr_image' => base64_encode($qr_image),
+							'mes' => $mes,
+							'url' => 'https://innova.cochabamba.bo/api/cheking-document/'.$find_data[0]->uuid
 							])
 							->setPaper('a4', 'letter')
 							->setWarnings(false);
@@ -296,6 +352,41 @@ class RegistroEntregaController extends Controller{
 
 	return $pdf->stream('FORMULARIO_'.$find_data[0]->nro_formulario.'.pdf');
 	
+	}
+
+
+	public function anularEntregaProducto(Request $request){
+
+		$find_entrega = RegistroEntrega::select()
+						->where('id_persona', $request->id_persona)
+						->first();
+
+		if($find_entrega){
+
+			RegistroEntrega::where('id_persona', $request->id_persona)
+							->update([
+								'status' => 'ANULADO'
+							]);
+
+			EntregaProducto::where(['id_registro' => $find_entrega->id])
+					->update([
+						'status' => 'ANULADO',
+						'fecha_anulacion' => date('Y-m-d H:i:s'),
+						'usuario_anulo' => Auth::id()
+					]);
+
+					return response([
+						'status'=> true,
+						'response'=> 'Se anulo el registro Nro. '
+					 ],200);
+
+		}else{
+			return response([
+				'status'=> false,
+				'message'=> 'El registro no existe por favor recargue la pagina'
+			 ],200);
+		}
+
 	}
 
 

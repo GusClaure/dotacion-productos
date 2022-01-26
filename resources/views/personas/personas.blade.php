@@ -342,6 +342,8 @@ $(document).ready(function() {
                         return '<h5 style="color: #035e1b;">ENTREGADO</h5>';
                     } else if (row.status == 'OBSERVADO') {
                         return '<h5 style="color: #e77500;">OBSERVADO</h5>';
+                    }else if (row.status == 'ANULADO') {
+                        return '<h5 style="color: #e77500;">ANULADO</h5>';
                     }
 
                 }
@@ -358,12 +360,17 @@ $(document).ready(function() {
                     }
                     if (row.status == 'PENDIENTE-PRODUCTO') {
                         return '<button value="' + row.id +
-                            '" type="button" title="Entregar Producto Agropecuario Faltante" id="btn-pendiente-producto" class="btn btn-danger"><i class="fas fa-project-diagram"></i></button>' +
+                            '" type="button" title="Entregar Producto Agropecuario Faltante" id="btn-pendiente-producto" class="btn btn-warning"><i class="fas fa-project-diagram"></i></button>' +
                             '<button value="' + row.id +
-                            '" type="button" title="Detalle de la entrega" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>';
+                            '" type="button" title="Detalle de la entrega" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>'+
+                            '<button value="' + row.id +
+                            '" type="button" title="Anular entregas de producto" id="btn-anular-entrega" class="btn btn-danger"><i class="fas fa-user-times"></i></button>';
                     } else if (row.status == 'ENTREGADO') {
                         return '<button value="' + row.id +
                             '" type="button" title="Ver detalle" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>';
+                    }else if (row.status == 'ANULADO') {
+                        return '<button value="' + row.id +
+                            '" type="button" title="Volver a registrar productos" id="btn-pendiente-producto-anulado" class="btn btn-success"><i class="fas fa-balance-scale"></i></button>';
                     }
 
                 }
@@ -494,6 +501,53 @@ $(document).ready(function() {
     });
 
 
+
+
+    $(document).on('click', '#btn-pendiente-producto-anulado', function() {
+        $('#div-entregados').show();
+        btn_id = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: "{{ route('detalle.entrega') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id_persona: $(this).val(),
+            },
+            success: function(data) {
+                if (data.status == true) {
+                    one_data = data.response[0];
+                    $('#title-modal_con').text(
+                        'COMPLEMENTACION DE ENTREGA DE PRODUCTO AGROPECUARIO FORMULARIO N.º ' +
+                        one_data.nro_formulario);
+                    $('#name_con').val($.trim(one_data.nombre + ' ' + one_data.primer_ap +
+                        ' ' + one_data.segundo_ap));
+                    $('#ci_con').val(one_data.ci);
+                    $('#expedido_con').val(one_data.expedido);
+                    $('#celular_con').val(one_data.nro_cel);
+                    $('#distrito_con').val(one_data.distrito);
+                    $('#central_con').val(one_data.sub_central);
+                    $('#rubro_con').val(one_data.nombre_rubro);
+                    $('#tipo_con').val(one_data.tipo);
+                    $('#btn-complementacion-producto').val(btn_id);
+                    $('#observacion_con').val(one_data.observacion);
+                    $("#productos-select_con").empty();
+                    $("#productos-entregados_con").empty();
+                
+                    var productos_data = '';
+                    $.each(data.productos, function(index, value) {
+                        productos_data = productos_data + '<option value="' + value
+                            .id + '">' + value.nombre_producto + '</option>';
+                    });
+                    $("#productos-entregados_con").append('');
+                    $("#productos-select_con").append(productos_data);
+                    $('#modal-complementacion-producto').modal('show');
+                }
+
+            }
+        });
+    });
+
+
     
     $(document).on('click', '#btn-complementacion-producto', function() {
         id_persona = $(this).val();
@@ -521,7 +575,7 @@ $(document).ready(function() {
                             observacion: $('#observacion_con').val()
                         },
                         success: function(data) {
-                            console.log(data);
+                            
                             if (data.status == true) {
                                 $('#modal-complementacion-producto').modal('hide');
                                 $('#list-registro').DataTable().ajax.reload();
@@ -551,6 +605,46 @@ $(document).ready(function() {
     });
 
 
+    $(document).on('click', '#btn-anular-entrega', function(){
+        id_persona = $(this).val();
+        swal({
+            title: "¿Desea Anular el Registro?",
+            text: "Esta accion quedara registrada!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Si, Anular Registro!",
+            cancelButtonText: "No, Cancelar!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+            },
+            function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                                    type: "DELETE",
+                                    url: "{{ route('anular.entrega') }}",
+                                    data: {
+                                        _token: "{{ csrf_token() }}",
+                                        id_persona: id_persona
+                                    },
+                                    success: function(data) {
+                                   if(data.status == true){
+                                    $('#list-registro').DataTable().ajax.reload();
+                                    swal("Anulado!", data.response, "success");
+                                   }else{
+                                    
+                                    swal("Ops!", data.message, "warning");
+                                   }
+                                    
+                                    }
+                                    
+                                });
+            }else{
+                swal.close();
+            }
+});
+
+    });
 
 
 

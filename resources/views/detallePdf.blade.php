@@ -51,7 +51,7 @@
 
     <div style="position: relative;">
         <img style="position: absolute; left: 0px;" src="data:image/png;base64,{{ $image }}" alt="Logo" height="75px">
-        <img style="position: absolute; right: 0px;" src="data:image/png;base64,{{ $image }}" alt="Logo" height="75px">
+        {{-- <img style="position: absolute; right: 0px;" src="data:image/png;base64,{{ $image }}" alt="Logo" height="75px"> --}}
     </div>
 
     <div style="text-align: center;">
@@ -103,9 +103,8 @@
                     <td style="text-align: left !important;"><b>{{ $data_person[($i - 1)]->nombre_producto ?? '' }}</b>
                     </td>
                     <td>ni idea</td>
-                    <td>6.128,00</td>
+                    <td>{{ $data_person[($i - 1)]->unidad ?? '' }}</td>
                     </tr>
-
                     @endfor
 
 
@@ -142,12 +141,15 @@
         </div>
 
         <div>
-            <img style="position: absolute; left: 42%; top: 78%;" src="data:image/png;base64,{{ $qr_image ?? ''}}" alt="Logo"
-                height="120px">
+            <a title="Verificacion" target="_blank" href="{{ $url ?? '' }}"><img style="position: absolute; left: 42%; top: 78%;" src="data:image/png;base64,{{ $qr_image ?? ''}}" alt="Logo"
+                height="120px"></a>
         </div>
 
-        <div style="position:relative;">
-            <p style="position: absolute; left: 250px; top: -20px;">Cochabamba 25 de Enero del 2022</p>
+        <div style="position:relative;"> 
+            <p style="position: absolute; left: 240px; top: 10px;">Cochabamba {{ date('d') }} de {{ $mes ?? '' }} del {{ date('Y') }}</p>
+        </div>
+        <div style="position:relative;"> 
+            <p style="position: absolute; left:550px; top: 10px; font-size: 10px;">Hora de Impresion: {{ date('h:i:s') }}</p>
         </div>
     </div>
 </body>

@@ -224,7 +224,7 @@ $(document).ready(function() {
         '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
         '<b>Rubro: </b>{{ $value->nombre_rubro }}<br>' +
         '<b>Tipo: </b>{{ $value->tipo }}<br>' +
-        '<b>Estado:  PENDIENTE</b><br>' +
+        '<b>Estado:  SIN ENTREGAR</b><br>' +
         '</span>');
     }else{
         marker.bindPopup('<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
@@ -312,7 +312,7 @@ $(document).ready(function() {
                             '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
                             '<b>Rubro: </b>'+value.nombre_rubro + '<br>' +
                             '<b>Tipo: </b>'+ value.tipo +'<br>' +
-                            '<b>Estado:  PENDIENTE</b><br>' +
+                            '<b>Estado:  SIN ENTREGAR</b><br>' +
                             '</span>');
                         }else{
                             marker.bindPopup(

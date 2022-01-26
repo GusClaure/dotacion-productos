@@ -29,10 +29,6 @@
                                 <th scope="col" style="color: aliceblue;">Nº Celular</th>
                                 <th scope="col" style="color: aliceblue;">Distrito</th>
                                 <th scope="col" style="color: aliceblue;">Sud Central</th>
-                                {{-- <th scope="col" style="color: aliceblue;">Categoria</th>
-                        <th scope="col" style="color: aliceblue;">Tipo</th>
-                        <th scope="col" style="color: aliceblue;">Producto</th>
-                        <th scope="col" style="color: aliceblue;">Observacion</th> --}}
                                 <th scope="col" style="color: aliceblue;">Estado</th>
                                 <th scope="col" style="color: aliceblue;">Acciones</th>
 
