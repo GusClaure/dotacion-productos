@@ -11,6 +11,7 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use App\Models\EntregaProducto;
 use App\Models\RegistroEntrega;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -19,6 +20,79 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class RegistroEntregaController extends Controller{
 
+
+	public function listaProductosEntregados(){
+		return view('personas.listaProductosEntregados', [
+			'data_count' => Persona::getAllCountData(),
+			'data_persons' => Persona::getAllPersonWith()
+		]);
+	}
+
+
+	public function listaProductosPendientes(){
+		return view('personas.listaProductosPendientes', [
+			'data_count' => Persona::getAllCountData(),
+			'data_persons' => Persona::getAllPersonWith()
+		]);
+	}
+
+
+	public function GetAllRegisterDatatableEntregados(Request $request){
+
+        
+        $registros = Persona::select('personas.*', 'registros_entregas.status')
+		->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+		->whereIn('registros_entregas.status', ['ENTREGADO'])
+		->where('ci', 'ilike', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
+        ->skip($request->start)
+        ->take($request->length)
+        ->orderBy('nombre', 'asc')
+        ->get();
+
+        $count = Persona::leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+		->whereIn('registros_entregas.status', ['ENTREGADO'])
+		->where('ci', 'ilike', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
+        ->count();
+
+
+
+        $draw = $request->draw;
+        return response([
+                     'draw' =>  $draw,
+                     'recordsTotal' => $count,
+                     'recordsFiltered' => $count,
+                     'data' => $registros
+                 ],200);
+
+    }
+
+
+	public function GetAllRegisterDatatablePendiente(Request $request){
+		 
+        $registros = Persona::select('personas.*', 'registros_entregas.status')
+		->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+		->whereIn('registros_entregas.status', ['PENDIENTE-PRODUCTO'])
+		->where('ci', 'ilike', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
+        ->skip($request->start)
+        ->take($request->length)
+        ->orderBy('nombre', 'asc')
+        ->get();
+
+        $count = Persona::leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+		->whereIn('registros_entregas.status', ['PENDIENTE-PRODUCTO'])
+		->where('ci', 'ilike', '%' . mb_strtoupper(trim($request->search['value'])) . '%')
+        ->count();
+
+
+
+        $draw = $request->draw;
+        return response([
+                     'draw' =>  $draw,
+                     'recordsTotal' => $count,
+                     'recordsFiltered' => $count,
+                     'data' => $registros
+                 ],200);
+	}
 
     public function RegistroEntregaProducto(Request $request){
 	

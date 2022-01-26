@@ -33,11 +33,13 @@ class HomeController extends Controller
                 'data_count' => Persona::getAllCountData(),
                 'data_persons' => Persona::getAllPersonWith()
             ]);
+            
         }else{
-            // $entregados = DB::table('personas')->where(['status' => 'ENTREGADO'])->count();
-            // $pendientes = DB::table('personas')->where(['status' => 'PENDIENTE'])->count();
-            // $observado = DB::table('personas')->where(['status' => 'OBSERVADO'])->count();
-            // return view('personas.personas', ['entregados' => $entregados, 'pendientes' => $pendientes, 'observado' => $observado]);
+            
+            return view('personas.personas', [
+                'data_count' => Persona::getAllCountData(),
+                'data_persons' => Persona::getAllPersonWith()
+            ]);
         } 
     }
 }

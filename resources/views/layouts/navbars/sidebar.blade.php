@@ -26,10 +26,7 @@
                     <div class=" dropdown-header noti-title">
                         <h6 class="text-overflow m-0">{{ __('DOTACION DE PRODUCTOS AGROPECUARIOS!') }}</h6>
                     </div>
-                    <!-- <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                        <i class="ni ni-single-02"></i>
-                        <span>{{ __('My profile') }}</span>
-                    </a> -->
+  
                    
                     <div class="dropdown-divider"></div>
                     <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
@@ -76,21 +73,51 @@
 
                     <div class="collapse show" id="navbar-examples">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('profile.edit') }}">
+                       <div style="display: none;">{{ $sitio = $sitio ?? ''; }}</div>
+                        @if($sitio == 'entregados')
+                            <li class="nav-item" style="background-color: #c4f7cd;">
+                                <a class="nav-link" href="{{ route('lista.entregados') }}">
                                     <i class="fas fa-address-card"></i>{{ __('Entregados') }} 
                                 </a>
                             </li>
+                            @else
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('user.index') }}">
+                                <a class="nav-link" href="{{ route('lista.entregados') }}">
+                                    <i class="fas fa-address-card"></i>{{ __('Entregados') }} 
+                                </a>
+                            </li>
+                            @endif
+
+                            @if($sitio == 'pendientes')
+                            
+                            <li class="nav-item" style="background-color: #c4f7cd;">
+                                <a class="nav-link" href="{{ route('lista.pendientes') }}">
                                     <i class="fas fa-user-edit"></i>{{ __('Pendientes') }}
                                 </a>
                             </li>
+
+                            @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('lista.pendientes') }}">
+                                    <i class="fas fa-user-edit"></i>{{ __('Pendientes') }}
+                                </a>
+                            </li>
+                            @endif
+
+                            @if($sitio == 'todos')
+                            <li class="nav-item" style="background-color: #c4f7cd;">
+                                <a class="nav-link" href="{{ route('persona.get-all') }}">
+                                    <i class="fas fa-coins"></i>{{ __('Todos') }}
+                                </a>
+                            </li>
+                            @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('persona.get-all') }}">
                                     <i class="fas fa-coins"></i>{{ __('Todos') }}
                                 </a>
                             </li>
+                            @endif
+
                         </ul>
                     </div>
                 </li>

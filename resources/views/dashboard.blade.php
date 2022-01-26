@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['sitio' => 'das'])
 
 @section('content')
 @include('layouts.headers.cards', ['data_count' => $data_count])
@@ -55,7 +55,7 @@
                 <option value="pendientes">PENDIENTES {{ $data_count->total_pendientes ?? ''}}</option>
                 <option value="pendientes_productos">PENDIENTES DE PRODUCTOS {{ $data_count->total_pendientes_producto ?? ''}}</option>
             </select>
-            <div id="map-eventos-sociales" class="col-sm-12" style="height: 402px; margin-top: 20px;"></div>
+            <div id="map-productos-agropecuarios" class="col-sm-12" style="height: 402px; margin-top: 20px;"></div>
         </div>
     </div>
 
@@ -132,7 +132,7 @@ $(document).ready(function() {
             $('.leaflet-control-attribution').text('innova.cochabamba.bo');
         }, 200);
 
-    let mymap = new L.Map('map-eventos-sociales', {
+    let mymap = new L.Map('map-productos-agropecuarios', {
         //crs: crs,
         minZoom: 13,
         maxZoom: 19,
@@ -233,7 +233,6 @@ $(document).ready(function() {
         '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
         '<b>Rubro: </b>{{ $value->nombre_rubro }}<br>' +
         '<b>Tipo: </b>{{ $value->tipo }}<br>' +
-        '<b>Fecha: </b><br>' +
         '<b>Estado:  {{ $value->status }}</b><br>' +
         '</span>');
     }
@@ -324,7 +323,6 @@ $(document).ready(function() {
                             '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
                             '<b>Rubro: </b>'+value.nombre_rubro + '<br>' +
                             '<b>Tipo: </b>'+ value.tipo +'<br>' +
-                            '<b>Fecha: </b><br>' +
                             '<b>Estado:  '+value.status +'</b><br>' +
                             '</span>');
                         }

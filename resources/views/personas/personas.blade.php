@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['sitio' => 'todos'])
 @section('content')
 
 
@@ -74,7 +74,6 @@
 <script src="{{ asset('assets') }}/vendor/select2/dist/js/select2.min.js"></script>
 <link rel="stylesheet" href="{{ asset('assets') }}/vendor/select2/dist/css/select2.min.css">
 
-
 <script src="../assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('libreries') }}/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
 <script src="{{ asset('libreries') }}/datatable-boostrap/js/bootstrap-paginator.min.js"></script>
@@ -92,9 +91,6 @@
 <link rel="stylesheet" href="/libreries/datatable-boostrap/css/responsive.dataTables.min.css">
 <link rel="stylesheet" href="/libreries/datatable-boostrap/css/buttons.dataTables.min.css">
 
-<style>
-
-</style>
 
 <script>
 $(document).ready(function() {
@@ -236,14 +232,9 @@ $(document).ready(function() {
         var id_persona = $(this).val();
         $("#frame").attr("src", '/entregas/detalle-pdf/'+id_persona);
         // $('#show-pdf')
-
     });
 
-    $(document).on('click', '#btn-observado', function() {
-        alert('El modulo se encuentra en desarrollo');
-    });
-
-
+ 
     var table = $('#list-registro').DataTable({
         lengthMenu: [
             [10, 20, 50, 100, 1000, 10000],
@@ -373,9 +364,6 @@ $(document).ready(function() {
                     } else if (row.status == 'ENTREGADO') {
                         return '<button value="' + row.id +
                             '" type="button" title="Ver detalle" id="btn-ver-detalle" class="btn btn-success"><i class="fas fa-eye"></i></button>';
-                    } else if (row.status == 'OBSERVADO') {
-                        return '<button value="' + row.id +
-                            '" type="button" title="Ver Observación" id="btn-observado" class="btn btn-dark"><i class="fas fa-asterisk"></i></button>';
                     }
 
                 }

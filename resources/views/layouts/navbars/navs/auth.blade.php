@@ -31,10 +31,7 @@
                     <div class=" dropdown-header noti-title">
                         <h6 class="text-overflow m-0">{{ __('DOTACION DE PRODUCTOS AGROPECUARIOS!') }}</h6>
                     </div>
-                    <!-- <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                        <i class="ni ni-single-02"></i>
-                        <span>{{ __('Mi Perfil') }}</span>
-                    </a> -->
+                 
                     {{-- <a href="#" class="dropdown-item">
                         <i class="ni ni-settings-gear-65"></i>
                         <span>{{ __('Settings') }}</span>

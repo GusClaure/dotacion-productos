@@ -63,7 +63,7 @@
     <div class="contenido">
         <div style="position:relative; left: 40px;">
             <input type="text" value="N.º" style="width: 35px; text-align: center;">
-            <input type="text" value="1590" style="width: 100px; position:relative; left:-10px; text-align: center;">
+            <input type="text" value="{{ $data_person[0]->nro_formulario ?? '' }}" style="width: 100px; position:relative; left:-10px; text-align: center;">
         </div>
         <div style="position:relative; top:-34px; left: 400px;">
             <input type="text" value="Nro. Cel." style="width: 100px; text-align: center;">
