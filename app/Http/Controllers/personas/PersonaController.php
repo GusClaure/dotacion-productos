@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\personas;
 
-use Productos;
+use File;
+use ZipArchive;
 use App\Models\Persona;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use App\Models\EntregaProducto;
 use App\Models\RegistroEntrega;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\EntregaProducto;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class PersonaController extends Controller{
@@ -170,8 +172,67 @@ class PersonaController extends Controller{
 			'required' => ':attribute es requerido!'
 		]);		
 
-		
 		return 'dwada';
+	}
+
+
+	public function exporCsv(Request $request){
+
+	// codigo para generar .zip con password
+		// $zip = new ZipArchive;
+   
+        // $fileName = 'myNewFile.zip';
+   
+        // if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE)
+        // {
+        //     $files = File::files(public_path());
+			
+        //     foreach ($files as $key => $value) {
+        //         $relativeNameInZipFile = basename($value);
+		// 		$zip->addFromString($relativeNameInZipFile, 'file content goes here'); //Add your file name
+		// 	    $zip->setEncryptionName($relativeNameInZipFile, ZipArchive::EM_AES_256, 'admin123'); //Add file name and password dynamically
+        //         $zip->addFile($value, $relativeNameInZipFile);
+        //     }
+			
+        //     $zip->close();
+        // }
+        // return response()->download(public_path($fileName));
+    
+
+		$fileName = 'tasks.csv';
+		$tasks = Persona::all();
+	 
+			 $headers = array(
+				 "Content-type"        => "text/csv",
+				 "Content-Disposition" => "attachment; filename=$fileName",
+				 "Pragma"              => "no-cache",
+				 "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+				 "Expires"             => "0"
+			 );
+			
+			 $columns = array('Title', 'Assign', 'Description', 'Start Date', 'Due Date');
+			 
+			 $callback = function() use($tasks, $columns) {
+				 $file = fopen(public_path().'dwad.csv', 'w');
+				 //$file = fopen('php://temp', 'r+');
+				 fputcsv($file, $columns);
+	 
+				 foreach ($tasks as $task) {
+					 $row['Titlee']  = $task->ci;
+					//  $row['Assign']    = $task->assign->name;
+					//  $row['Description']    = $task->description;
+					//  $row['Start Date']  = $task->start_at;
+					//  $row['Due Date']  = $task->end_at;
+	 
+					 fputcsv($file, array($row['Titlee']));
+				 }
+				
+				 fclose($file);
+			 };
+			 
+			 return response()->stream($callback, 200, $headers);
+			 
+			
 	}
 
 

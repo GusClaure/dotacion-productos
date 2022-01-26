@@ -57,5 +57,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('entregas/complemento-producto', 'App\Http\Controllers\entregas\RegistroEntregaController@updateEntregaProductoComplemento')->name('update.entrega');
 	Route::get('entregas/detalle-pdf/{id_persona}', 'App\Http\Controllers\entregas\RegistroEntregaController@generatePdfDetalleEntrega');
 	
+
+	Route::get('personas/export-csv', 'App\Http\Controllers\personas\PersonaController@exporCsv');//->name('personas.export.csv');
 });
 
