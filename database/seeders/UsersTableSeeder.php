@@ -14,6 +14,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::raw('CREATE EXTENSION IF NOT EXISTS "pgcrypto"');
         DB::table('users')->insert([
             'name' => 'Gustavo Claure Flores',
             'email' => 'gclaure@cochabamba.bo',
