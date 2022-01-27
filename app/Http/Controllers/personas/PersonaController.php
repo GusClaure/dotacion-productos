@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PersonaController extends Controller{
 
@@ -176,63 +177,64 @@ class PersonaController extends Controller{
 	}
 
 
-	public function exporCsv(Request $request){
+	public function exporCsv(){
 
-	// codigo para generar .zip con password
-		// $zip = new ZipArchive;
-   
-        // $fileName = 'myNewFile.zip';
-   
-        // if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE)
-        // {
-        //     $files = File::files(public_path());
+		     $fileName_csv = 'export_user_'.Auth::id().'_'.date('Y_m_d').'.csv';
+			 $fileName_zip = 'export_user_'.Auth::id().'_'.date('Y_m_d').'.zip';
 			
-        //     foreach ($files as $key => $value) {
-        //         $relativeNameInZipFile = basename($value);
-		// 		$zip->addFromString($relativeNameInZipFile, 'file content goes here'); //Add your file name
-		// 	    $zip->setEncryptionName($relativeNameInZipFile, ZipArchive::EM_AES_256, 'admin123'); //Add file name and password dynamically
-        //         $zip->addFile($value, $relativeNameInZipFile);
-        //     }
-			
-        //     $zip->close();
-        // }
-        // return response()->download(public_path($fileName));
-    
 
-		$fileName = 'tasks.csv';
+			 if($this->generateCSVTable($fileName_csv)){
+				return 'si';
+			 }else{
+				return 'no';
+			 }
+
+
+	    //codigo para generar .zip con password
+		$zip = new ZipArchive;
+        if ($zip->open(public_path('export/').$fileName_zip, ZipArchive::CREATE) === TRUE)
+        {
+            $files = File::files(public_path('archives_csv'));
+			//public_path('export/')
+            foreach ($files as $key => $value) {
+                $relativeNameInZipFile = basename($value);
+				$zip->addFromString($relativeNameInZipFile, 'file content goes here'); //Add your file name
+			    $zip->setEncryptionName($relativeNameInZipFile, ZipArchive::EM_AES_256, 'admin123'); //Add file name and password dynamically
+                $zip->addFile($value, $relativeNameInZipFile);
+            }
+			
+            $zip->close();
+        }
+        return response()->download(public_path('export/').$fileName_zip);
+    	 
+	}
+
+
+
+	private function generateCSVTable($fileName_csv){
+
 		$tasks = Persona::all();
-	 
-			 $headers = array(
-				 "Content-type"        => "text/csv",
-				 "Content-Disposition" => "attachment; filename=$fileName",
-				 "Pragma"              => "no-cache",
-				 "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-				 "Expires"             => "0"
-			 );
-			
-			 $columns = array('Title', 'Assign', 'Description', 'Start Date', 'Due Date');
+		$columns = ['Title', 'Assign', 'Description', 'Start Date', 'Due Date'];
 			 
-			 $callback = function() use($tasks, $columns) {
-				 $file = fopen(public_path().'dwad.csv', 'w');
-				 //$file = fopen('php://temp', 'r+');
-				 fputcsv($file, $columns);
-	 
-				 foreach ($tasks as $task) {
-					 $row['Titlee']  = $task->ci;
-					//  $row['Assign']    = $task->assign->name;
-					//  $row['Description']    = $task->description;
-					//  $row['Start Date']  = $task->start_at;
-					//  $row['Due Date']  = $task->end_at;
-	 
-					 fputcsv($file, array($row['Titlee']));
-				 }
-				
-				 fclose($file);
-			 };
-			 
-			 return response()->stream($callback, 200, $headers);
-			 
-			
+		$callback = function() use($tasks, $columns, $fileName_csv) {
+			$file = fopen(public_path('archives_csv/').$fileName_csv, 'w');
+			//$file = fopen('php://temp', 'r+');
+			fputcsv($file, $columns);
+
+			foreach ($tasks as $task) {
+				$row['Titlee']  = $task->ci;
+			   //  $row['Assign']    = $task->assign->name;
+			   //  $row['Description']    = $task->description;
+			   //  $row['Start Date']  = $task->start_at;
+			   //  $row['Due Date']  = $task->end_at;
+
+				fputcsv($file, array($row['Titlee']));
+			}
+			fclose($file);
+		};
+		
+	  return (new StreamedResponse($callback))->sendContent();
+	   
 	}
 
 
