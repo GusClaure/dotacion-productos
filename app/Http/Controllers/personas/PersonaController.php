@@ -11,6 +11,7 @@ use App\Models\EntregaProducto;
 use App\Models\RegistroEntrega;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use EntregasProductos;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -179,11 +180,12 @@ class PersonaController extends Controller{
 
 	public function exporCsv(){
 
-		     $fileName_csv = 'export_user_'.Auth::id().'_'.date('Y_m_d').'.csv';
+		     $fileName_csv_registro_entradas = 'export_user_'.Auth::id().'_table_registro_entregas_'.date('Y_m_d').'.csv';
+			 $fileName_csv_entregas_producto = 'export_user_'.Auth::id().'_table_entregas_producto_'.date('Y_m_d').'.csv';
 			 $fileName_zip = 'export_user_'.Auth::id().'_'.date('Y_m_d').'.zip';
 			
 
-			 if($this->generateCSVTable($fileName_csv)){
+			 if($this->generateCSVTableRegistroEntradas($fileName_csv_registro_entradas) && $this->generateCSVTableEntregasProducto($fileName_csv_entregas_producto)){
 				return 'si';
 			 }else{
 				return 'no';
@@ -211,30 +213,57 @@ class PersonaController extends Controller{
 
 
 
-	private function generateCSVTable($fileName_csv){
+	private function generateCSVTableRegistroEntradas($fileName_csv){
 
-		$tasks = Persona::all();
-		$columns = ['Title', 'Assign', 'Description', 'Start Date', 'Due Date'];
-			 
-		$callback = function() use($tasks, $columns, $fileName_csv) {
+		$registro_entregas = RegistroEntrega::all();
+		$columns = ['id', 'uuid', 'id_persona', 'observacion', 'fecha_registro', 'status'];
+		$delimiter = ';';
+		$callback = function() use($registro_entregas, $columns, $fileName_csv, $delimiter) {
 			$file = fopen(public_path('archives_csv/').$fileName_csv, 'w');
 			//$file = fopen('php://temp', 'r+');
 			fputcsv($file, $columns);
 
-			foreach ($tasks as $task) {
-				$row['Titlee']  = $task->ci;
-			   //  $row['Assign']    = $task->assign->name;
-			   //  $row['Description']    = $task->description;
-			   //  $row['Start Date']  = $task->start_at;
-			   //  $row['Due Date']  = $task->end_at;
-
-				fputcsv($file, array($row['Titlee']));
+			foreach ($registro_entregas as $value) {
+				$row['id']  = $value->id;
+			    $row['uuid'] = $value->uuid;
+			    $row['id_persona'] = $value->id_persona;
+			    $row['observacion'] = $value->observacion;
+			    $row['fecha_registro'] = $value->fecha_registro;
+				$row['status'] = $value->status;
+				fputcsv($file, $row, $delimiter);
 			}
 			fclose($file);
 		};
 		
 	  return (new StreamedResponse($callback))->sendContent();
 	   
+	}
+
+
+	private function generateCSVTableEntregasProducto($fileName_csv){
+		$registro_entregas = EntregaProducto::all();
+		$columns = ['id', 'id_usuario', 'id_registro', 'id_producto', 'fecha_entrega', 'fecha_anulacion', 'usuario_anulo', 'status'];
+		$delimiter = ';';
+		$callback = function() use($registro_entregas, $columns, $fileName_csv, $delimiter) {
+			$file = fopen(public_path('archives_csv/').$fileName_csv, 'w');
+			//$file = fopen('php://temp', 'r+');
+			fputcsv($file, $columns);
+
+			foreach ($registro_entregas as $value) {
+				$row['id']  = $value->id;
+			    $row['id_usuario'] = $value->id_usuario;
+			    $row['id_registro'] = $value->id_registro;
+			    $row['id_producto'] = $value->id_producto;
+			    $row['fecha_entrega'] = $value->fecha_entrega;
+				$row['fecha_anulacion'] = $value->fecha_anulacion;
+				$row['usuario_anulo'] = $value->fecha_anulacion;
+				$row['status'] = $value->status;
+				fputcsv($file, $row, $delimiter);
+			}
+			fclose($file);
+		};
+		
+	  return (new StreamedResponse($callback))->sendContent();
 	}
 
 
