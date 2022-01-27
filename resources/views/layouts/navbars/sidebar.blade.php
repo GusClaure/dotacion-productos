@@ -1,24 +1,26 @@
-
-<nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light" style="background-color: rgb(235, 232, 232);" id="sidenav-main">
+<nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light"
+    style="background-color: rgb(235, 232, 232);" id="sidenav-main">
     <div class="container-fluid">
         <!-- Toggler -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main"
+            aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-  <!-- Brand -->
-  <a class="navbar-brand pt-0" href="{{ route('home') }}">
-    <img src="{{ asset('argon') }}/img/brand/cocha-innovacion.png" class="navbar-brand-img" alt="...">
-</a>
-     
-      
+        <!-- Brand -->
+        <a class="navbar-brand pt-0" href="{{ route('home') }}">
+            <img src="{{ asset('argon') }}/img/brand/cocha-innovacion.png" class="navbar-brand-img" alt="...">
+        </a>
+
+
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
             <li class="nav-item dropdown">
-                <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
                     <div class="media align-items-center">
                         <span class="avatar avatar-sm rounded-circle">
-                        <img alt="Image placeholder" src="{{ asset('argon') }}/img/theme/logoAlcaldiaCbba.png">
+                            <img alt="Image placeholder" src="{{ asset('argon') }}/img/theme/logoAlcaldiaCbba.png">
                         </span>
                     </div>
                 </a>
@@ -26,8 +28,8 @@
                     <div class=" dropdown-header noti-title">
                         <h6 class="text-overflow m-0">{{ __('DOTACION DE PRODUCTOS AGROPECUARIOS!') }}</h6>
                     </div>
-  
-                   
+
+
                     <div class="dropdown-divider"></div>
                     <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
@@ -48,7 +50,9 @@
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
-                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
+                        <button type="button" class="navbar-toggler" data-toggle="collapse"
+                            data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false"
+                            aria-label="Toggle sidenav">
                             <span></span>
                             <span></span>
                         </button>
@@ -56,40 +60,49 @@
                 </div>
             </div>
             <!-- Form -->
-          
+
             <!-- Navigation -->
             <ul class="navbar-nav">
                 {{-- <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">
-                        <i class="ni ni-tv-2 text-primary"></i> {{ __('Dashboard') }}
-                    </a>
+                <i class="ni ni-tv-2 text-primary"></i> {{ __('Dashboard') }}
+                </a>
                 </li> --}}
                 <li class="nav-item">
-                    <a class="nav-link active" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
+                    <a class="nav-link active" href="#navbar-examples" data-toggle="collapse" role="button"
+                        aria-expanded="true" aria-controls="navbar-examples">
                         <i class="fas fa-calendar-check" style="color: #f4645f;"></i>
-                        
+
                         <span class="nav-link-text" style="color: #f4645f;">{{ __('Entrega de Productos') }}</span>
                     </a>
 
                     <div class="collapse show" id="navbar-examples">
                         <ul class="nav nav-sm flex-column">
-                       <div style="display: none;">{{ $sitio = $sitio ?? ''; }}</div>
-                        @if($sitio == 'entregados')
+                            <div style="display: none;">{{ $sitio = $sitio ?? ''; }}</div>
+
+
+                            <li class="nav-item" >
+                                <a class="nav-link" style="cursor: pointer;" id="export-data">
+                                <i class="fas fa-database"></i>{{ __('Exportar Datos') }}
+                                </a>
+                            </li>
+
+                            @if($sitio == 'entregados')
                             <li class="nav-item" style="background-color: rgb(161, 223, 212)">
                                 <a class="nav-link" href="{{ route('lista.entregados') }}">
-                                    <i class="fas fa-address-card"></i>{{ __('Entregados') }} 
+                                    <i class="fas fa-address-card"></i>{{ __('Entregados') }}
                                 </a>
                             </li>
                             @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('lista.entregados') }}">
-                                    <i class="fas fa-address-card"></i>{{ __('Entregados') }} 
+                                    <i class="fas fa-address-card"></i>{{ __('Entregados') }}
                                 </a>
                             </li>
                             @endif
 
                             @if($sitio == 'pendientes')
-                            
+
                             <li class="nav-item" style="background-color: rgb(161, 223, 212)">
                                 <a class="nav-link" href="{{ route('lista.pendientes') }}">
                                     <i class="fas fa-user-edit"></i>{{ __('Pendientes') }}
@@ -124,27 +137,28 @@
 
                 {{-- <li class="nav-item">
                     <a class="nav-link" href="{{ route('icons') }}">
-                        <i class="ni ni-planet text-blue"></i> {{ __('Icons') }}
-                    </a>
+                <i class="ni ni-planet text-blue"></i> {{ __('Icons') }}
+                </a>
                 </li> --}}
                 {{-- <li class="nav-item ">
                     <a class="nav-link" href="{{ route('map') }}">
-                        <i class="ni ni-pin-3 text-orange"></i> {{ __('Maps') }}
-                    </a>
+                <i class="ni ni-pin-3 text-orange"></i> {{ __('Maps') }}
+                </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('table') }}">
-                      <i class="ni ni-bullet-list-67 text-default"></i>
-                      <span class="nav-link-text">Tables</span>
+                        <i class="ni ni-bullet-list-67 text-default"></i>
+                        <span class="nav-link-text">Tables</span>
                     </a>
                 </li> --}}
                 {{-- <li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="ni ni-circle-08 text-pink"></i> {{ __('Register') }}
-                    </a>
+                </a>
                 </li>
                 <li class="nav-item mb-5 mr-4 ml-4 pl-1 bg-danger" style="position: absolute; bottom: 0;">
-                    <a class="nav-link text-white" href="https://www.creative-tim.com/product/argon-dashboard-pro-laravel" target="_blank">
+                    <a class="nav-link text-white"
+                        href="https://www.creative-tim.com/product/argon-dashboard-pro-laravel" target="_blank">
                         <i class="ni ni-cloud-download-95"></i> Upgrade to PRO
                     </a>
                 </li> --}}

@@ -184,31 +184,37 @@ class PersonaController extends Controller{
 			 $fileName_csv_entregas_producto = 'export_user_'.Auth::id().'_table_entregas_producto_'.date('Y_m_d').'.csv';
 			 $fileName_zip = 'export_user_'.Auth::id().'_'.date('Y_m_d').'.zip';
 			
+			$files = glob(public_path('archives_csv/*')); //obtenemos todos los nombres de los ficheros
+			foreach($files as $file){
+				if(is_file($file))
+				unlink($file); //elimino el fichero
+			}
 
 			 if($this->generateCSVTableRegistroEntradas($fileName_csv_registro_entradas) && $this->generateCSVTableEntregasProducto($fileName_csv_entregas_producto)){
-				return 'si';
-			 }else{
-				return 'no';
-			 }
-
-
-	    //codigo para generar .zip con password
-		$zip = new ZipArchive;
-        if ($zip->open(public_path('export/').$fileName_zip, ZipArchive::CREATE) === TRUE)
-        {
-            $files = File::files(public_path('archives_csv'));
-			//public_path('export/')
-            foreach ($files as $key => $value) {
-                $relativeNameInZipFile = basename($value);
-				$zip->addFromString($relativeNameInZipFile, 'file content goes here'); //Add your file name
-			    $zip->setEncryptionName($relativeNameInZipFile, ZipArchive::EM_AES_256, 'admin123'); //Add file name and password dynamically
-                $zip->addFile($value, $relativeNameInZipFile);
-            }
+				//codigo para generar .zip con password
+				$zip = new ZipArchive;
+				if ($zip->open(public_path('export/').$fileName_zip, ZipArchive::CREATE) === TRUE)
+				{
+					$files = File::files(public_path('archives_csv'));
+					//public_path('export/')
+					foreach ($files as $key => $value) {
+						$relativeNameInZipFile = basename($value);
+						$zip->addFromString($relativeNameInZipFile, 'file content goes here'); //Add your file name
+						$zip->setEncryptionName($relativeNameInZipFile, ZipArchive::EM_AES_256, env('PASSWORD_DESCOMPRESS')); //Add file name and password dynamically
+						$zip->addFile($value, $relativeNameInZipFile);
+					}
 			
             $zip->close();
         }
-        return response()->download(public_path('export/').$fileName_zip);
-    	 
+           return response()->download(public_path('export/').$fileName_zip);
+
+			 }else{
+
+				return response([
+					'status' => false,
+					'message' => 'No se puedo generar el archivo'
+				 ],200);
+			 } 
 	}
 
 

@@ -60,6 +60,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::delete('entregas/anular-entrega', 'App\Http\Controllers\entregas\RegistroEntregaController@anularEntregaProducto')->name('anular.entrega');
 	
 
-	Route::get('personas/export-csv', 'App\Http\Controllers\personas\PersonaController@exporCsv');//->name('personas.export.csv');
+	Route::get('personas/export-csv', 'App\Http\Controllers\personas\PersonaController@exporCsv')->name('personas.export.csv');
 });
 
