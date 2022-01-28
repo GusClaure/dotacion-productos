@@ -23,6 +23,11 @@ class Personas extends Migration
             $table->string('segundo_ap',100);
             $table->string('ci',20)->unique();
             $table->string('expedido',50);
+            $table->string('fecha_nacimiento',50);
+            $table->string('lugar_nacimiento',50);
+            $table->string('genero',50);
+            $table->string('estado_civil',50);
+            $table->string('ocupacion',100);
             $table->string('distrito',20);
             $table->string('sub_central',100);
             $table->string('sindicato',100);

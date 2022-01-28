@@ -96,16 +96,21 @@
                     <th>NOMBRE DEL PRODUCTO/INSUMO</th>
                     <th>PRESENTACION-UNIDAD</th>
                     <th>CANTIDAD</th>
+                    <th>FECHA</th>
                 </tr>
 
                 @for ($i = 1; $i <= 5; $i++) <tr>
                     <td>{{ $i }}</td>
-                    <td style="text-align: left !important;"><b>{{ $data_person[($i - 1)]->nombre_producto ?? '' }}</b>
-                    </td>
-                    <td>ni idea</td>
+                    <td style="text-align: left !important;"><b>{{ $data_person[($i - 1)]->nombre_producto ?? '' }}</b></td>
                     <td>{{ $data_person[($i - 1)]->unidad ?? '' }}</td>
+                    <td>{{ $data_person[($i - 1)]->cantidad_producto_entregado ?? ''}}</td>
+                    @if(isset($data_person[($i - 1)]->fecha_entrega))
+                    <td>{{ date("d/m/Y", strtotime($data_person[($i - 1)]->fecha_entrega ?? '')) }}</td>  
+                    @else
+                    <td></td>
+                    @endif
                     </tr>
-                    @endfor
+                @endfor
 
 
             </table>
@@ -141,7 +146,7 @@
         </div>
 
         <div>
-            <a title="Verificacion" target="_blank" href="{{ $url ?? '' }}"><img style="position: absolute; left: 42%; top: 78%;" src="data:image/png;base64,{{ $qr_image ?? ''}}" alt="Logo"
+            <a title="Verificacion" target="_blank" href="{{ $url ?? '' }}"><img style="position: absolute; left: 42%; top: 83%;" src="data:image/png;base64,{{ $qr_image ?? ''}}" alt="Logo"
                 height="120px"></a>
         </div>
 

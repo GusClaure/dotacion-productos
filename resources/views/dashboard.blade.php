@@ -178,6 +178,7 @@ $(document).ready(function() {
 
     let marker;
     '@foreach($data_persons as $value)'
+    if('{{ $value->ubicacion }}' != '0'){
     ubications = '{{ $value->ubicacion }}'.split(',');
     if ('{{$value->status}}' == 'ENTREGADO') {
         var valueIcon = new L.Icon({
@@ -209,7 +210,9 @@ $(document).ready(function() {
         });
     }
 
-    marker = new L.Marker(ubications, {
+    
+
+        marker = new L.Marker(ubications, {
         draggable: false,
         icon: valueIcon
     });
@@ -237,7 +240,7 @@ $(document).ready(function() {
         '</span>');
     }
 
-
+    }
     '@endforeach'
 
 
@@ -264,6 +267,7 @@ $(document).ready(function() {
                   'animate': true,
                   'duration': 3});
                     $.each(data.response, function(index, value) {
+                        console.log(value);
                         ubications = value.ubicacion.split(',');
                         console.log(value.status);
                         if (value.status == 'ENTREGADO') {
@@ -326,7 +330,7 @@ $(document).ready(function() {
                             '<b>Estado:  '+value.status +'</b><br>' +
                             '</span>');
                         }
-                       
+                    
                     });
                 }
             }

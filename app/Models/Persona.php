@@ -20,6 +20,11 @@ class Persona extends Model
         'segundo_ap',
         'ci',
         'expedido',
+        'fecha_nacimiento',
+        'lugar_nacimiento',
+        'genero',
+        'estado_civil',
+        'ocupacion',
         'distrito',
         'sub_central',
         'sindicato',
@@ -31,7 +36,7 @@ class Persona extends Model
     ];
 
     
-
+ 
     protected $hiden = [];
 
 

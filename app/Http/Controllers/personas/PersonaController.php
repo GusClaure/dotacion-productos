@@ -335,10 +335,14 @@ class PersonaController extends Controller{
             $id = DB::table('rubros')->select('id')->where('nombre_rubro', 'ilike', '%Forraje%')->first();
             $categoria = $id->id;
             $type = trim($request->forraje);
+        }else if(trim($request->agricola) != '' || trim($request->agricola) != null){
+            $id = DB::table('rubros')->select('id')->where('nombre_rubro', 'ilike', '%Agricola%')->first();
+            $categoria = $id->id;
+            $type = trim($request->agricola);
         }else{
             return response([
                 'status'=> false,
-                'message'=> 'El registro no tiene ningun dato en rubros'
+                'message'=> 'El registro no tiene ningun dato en rubros '. $request->ci
              ],422);
         }
 
@@ -357,12 +361,18 @@ class PersonaController extends Controller{
         $people->segundo_ap = trim($request->segundo_ap);
         $people->ci = trim($request->carnet);
         $people->expedido = trim($request->expedido);
+		$people->fecha_nacimiento = trim($request->fecha_nacimiento);
+		$people->lugar_nacimiento = trim($request->lugar_nacimiento);
+		$people->genero = trim($request->genero);
+		$people->estado_civil = trim($request->estado_civil);
+		$people->ocupacion = trim($request->ocupacion);
         $people->distrito = trim($request->distrito);
         $people->sub_central = trim($request->sud_central);
         $people->sindicato = trim($request->sindicato);
         $people->rubro_id = $categoria;
         $people->tipo = $type;
         $people->ubicacion = $ubicacion;
+
 
         if($people->save()){
             return response([

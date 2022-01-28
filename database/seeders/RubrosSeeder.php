@@ -40,7 +40,13 @@ class RubrosSeeder extends Seeder
 
         Rubro::create([
             'nombre_rubro'  =>  'Forraje',
-            'descripcion'  =>  'Categoria Forraje',
+            'descripcion'  =>  'Rubro Forraje',
+            'fecha_registro'  =>  now()
+        ]);
+
+        Rubro::create([
+            'nombre_rubro'  =>  'Agricola',
+            'descripcion'  =>  'rubro Agricola',
             'fecha_registro'  =>  now()
         ]);
     }
