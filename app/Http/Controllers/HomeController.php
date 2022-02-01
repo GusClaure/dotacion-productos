@@ -26,12 +26,13 @@ class HomeController extends Controller
     public function index()
     {
 
+       
         if(Auth::user()->role == 'ADMIN'){
-           
+        
             
             return view('dashboard', [
                 'data_count' => Persona::getAllCountData(),
-                'data_persons' => Persona::getAllPersonWith()
+                'sindicatos' => Persona::getAllSindicatos()
             ]);
             
         }else{

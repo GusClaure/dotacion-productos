@@ -48,17 +48,11 @@ class Persona extends Model
         count(1) filter (where registros_entregas.status = :status_entregado) as total_entregados,
         count(1) filter (where registros_entregas.status is null) as total_pendientes,
         count(1) filter (where registros_entregas.status = 'PENDIENTE-PRODUCTO') as total_pendientes_producto,
-        count(1) filter (where registros_entregas.status = 'OBSERVADO') as total_observados,
-        count(1) filter (where sindicato = 'Maica Sud' and registros_entregas.status = 'ENTREGADO') as Maica_Sud,
-        count(1) filter (where sindicato = 'Maica Chica' and registros_entregas.status = 'ENTREGADO') as Maica_Chica,
-        count(1) filter (where sindicato = 'Maica Arriba' and registros_entregas.status = 'ENTREGADO') as Maica_Arriba,
-        count(1) filter (where sindicato = 'Maica central' and registros_entregas.status = 'ENTREGADO') as Maica_central,
-        count(1) filter (where sindicato = 'Maica Norte' and registros_entregas.status = 'ENTREGADO') as Maica_Norte,
-        count(1) filter (where sindicato = 'Maica Milenario' and registros_entregas.status = 'ENTREGADO') as Maica_Milenario,
-        count(1) filter (where sindicato = 'Maica Kaspichaca' and registros_entregas.status = 'ENTREGADO') as Maica_Kaspichaca,
-        count(1) filter (where sindicato = 'Maica San Isidro' and registros_entregas.status = 'ENTREGADO') as Maica_San_Isidro,
-        count(1) filter (where sindicato = 'Maica Quenamari' and registros_entregas.status = 'ENTREGADO') as Maica_Quenamari,
-        count(1) filter (where sindicato = 'Maica Bolivia' and registros_entregas.status = 'ENTREGADO') as Maica_Bolivia
+        count(1) filter (where sub_central ilike '%Valle Hermoso%' and registros_entregas.status = 'ENTREGADO') as valle_hermoso,
+        count(1) filter (where sub_central ilike '%Pucara grande%' and registros_entregas.status = 'ENTREGADO') as pucara_grande,
+        count(1) filter (where sub_central ilike '%Azirumarca%' and registros_entregas.status = 'ENTREGADO') as azirumarca,
+        count(1) filter (where sub_central ilike '%Maica%' and registros_entregas.status = 'ENTREGADO') as maica,
+        count(1) filter (where sub_central ilike '%Campesino Norte%' and registros_entregas.status = 'ENTREGADO') as campesino_norte
       from personas
       LEFT JOIN registros_entregas
       ON registros_entregas.id_persona = personas.id", 
@@ -76,6 +70,24 @@ class Persona extends Model
         ->select('personas.*', 'registros_entregas.*', 'rubros.nombre_rubro')
         ->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
         ->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+        ->get();
+    }
+
+    public static function getAllPersonsWithSindicates($sindicato){
+        return DB::table('personas')
+        ->select('personas.*', 'registros_entregas.*', 'rubros.nombre_rubro')
+        ->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+        ->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+        ->where('sindicato', $sindicato)
+        ->get();
+    }
+
+    public static function getAllSindicatos(){
+
+        return DB::table('personas')
+        ->select('sindicato')
+        ->distinct('sindicato')
+        ->orderBy('sindicato', 'asc')
         ->get();
     }
 }

@@ -38,14 +38,17 @@ class PersonaController extends Controller{
 	public function personFilter(Request $request){
 	//$request->criterio
 	$registro = '';
+	
 	if($request->criterio == 'total'){
-		$registro = Persona::select('ci','descripcion','distrito','expedido',
-							'nombre','nombre_rubro',
-							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
-							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
-							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
-							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
-							->get();
+		
+			$registro = Persona::select('ci','descripcion','distrito','expedido',
+			'nombre','nombre_rubro',
+			'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
+			'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
+			->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
+			->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+			->where('personas.sindicato', $request->sindicato)
+			->get();
 	
 	}else if($request->criterio == 'entregados'){
 		$registro = Persona::select('ci','descripcion','distrito','expedido',
@@ -54,7 +57,7 @@ class PersonaController extends Controller{
 							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
 							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
 							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
-							->where(['registros_entregas.status' => 'ENTREGADO'])
+							->where(['registros_entregas.status' => 'ENTREGADO', 'personas.sindicato' => $request->sindicato])
 							->get();
 	}else if($request->criterio == 'pendientes'){
 
@@ -64,18 +67,10 @@ class PersonaController extends Controller{
 							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
 							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
 							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
+							->where(['personas.sindicato', $request->sindicato, 'registros_entregas.status' => 'PENDIENTE-PRODUCTO'])
 							->whereNull('registros_entregas.status')
 							->get();
-
-	}else if($request->criterio == 'pendientes_productos'){
-		$registro = Persona::select('ci','descripcion','distrito','expedido',
-							'nombre','nombre_rubro',
-							'nro_cel','nro_formulario','observacion','observacion','segundo_ap',
-							'sindicato','sub_central','tipo', 'ubicacion', 'registros_entregas.status')
-							->leftjoin('registros_entregas', 'personas.id', '=', 'registros_entregas.id_persona')
-							->leftjoin('rubros', 'personas.rubro_id', '=', 'rubros.id')
-							->where(['registros_entregas.status' => 'PENDIENTE-PRODUCTO'])
-							->get();
+							
 	}
 	
 	

@@ -13,24 +13,7 @@
                             {{-- <h6 class="text-uppercase text-light ls-1 mb-1">Overview</h6> --}}
                             <h2 class="text-white mb-0">Sindicatos</h2>
                         </div>
-                        <div class="col">
-                            <ul class="nav nav-pills justify-content-end">
-                                {{-- <li class="nav-item mr-2 mr-md-0" data-toggle="chart" data-target="#chart-sales" data-update='{"data":{"datasets":[{"data":[0, 20, 10, 30, 15, 40, 20, 60, 60]}]}}'
-                                data-prefix="$" data-suffix="en">
-                                <a href="#" class="nav-link py-2 px-3 active" data-toggle="tab">
-                                    <span class="d-none d-md-block">Month</span>
-                                    <span class="d-md-none">M</span>
-                                </a>
-                                </li> --}}
-                                {{-- <li class="nav-item" data-toggle="chart" data-target="#chart-sales" data-update='{"data":{"datasets":[{"data":[0, 20, 5, 25, 10, 30, 15, 40, 40]}]}}'
-                                data-prefix="$" data-suffix="k">
-                                <a href="#" class="nav-link py-2 px-3" data-toggle="tab">
-                                    <span class="d-none d-md-block">Week</span>
-                                    <span class="d-md-none">W</span>
-                                </a>
-                                </li> --}}
-                            </ul>
-                        </div>
+                 
                     </div>
                 </div>
                 <div class="card-body">
@@ -47,14 +30,28 @@
 
 
     <div class="form-row">
-        <div class="form-group col-md-12" style="text-align: center;">
-            <h3 for="ausenciap1">PUNTOS Y COORDENADAS</h3>
-            <select class="form-control col-sm-12" id="filter-count" style="text-align: center;">
-                <option value="total">TOTAL {{ $data_count->total ?? '' }}</option>
-                <option value="entregados">ENTREGADOS {{ $data_count->total_entregados ?? ''}}</option>
-                <option value="pendientes">PENDIENTES {{ $data_count->total_pendientes ?? ''}}</option>
-                <option value="pendientes_productos">PENDIENTES DE PRODUCTOS {{ $data_count->total_pendientes_producto ?? ''}}</option>
+        <div class="form-group col-md-12">
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-sm-6">
+                <h3 for="ausenciap1">SINDICATOS</h3>
+            <select class="form-control col-sm-12" id="filter-sindicato" >
+            <option selected disabled>Elija un Sindicato</option>
+            @foreach ($sindicatos as $value)
+            <option value="{{ $value->sindicato }}">{{ $value->sindicato }}</option>
+            @endforeach
             </select>
+                </div>
+                <div class="col-sm-6">
+                <h3 for="ausenciap1">TOTAL</h3>
+            <select class="form-control col-sm-12" id="filter-count" disabled>
+                <option selected disabled>Elija una opción</option>
+                <option value="total">TOTAL</option>
+                <option value="entregados">ENTREGADOS </option>
+                <option value="pendientes">PENDIENTES</option>
+            </select>
+                </div>
+            </div>
+            
             <div id="map-productos-agropecuarios" class="col-sm-12" style="height: 402px; margin-top: 20px;"></div>
         </div>
     </div>
@@ -169,79 +166,12 @@ $(document).ready(function() {
         }).addTo(mymap);
 
     //marga el inicio del mapa 
-    //mymap.setView([-17.39382474713952, -66.15696143763128], 18);
-    mymap.setView([-17.425460491975,-66.201554314586], 13);
+    mymap.setView([-17.39382474713952, -66.15696143763128], 18);
+    //mymap.setView([-17.425460491975,-66.201554314586], 13);
 
     setTimeout(function() {
         mymap.invalidateSize();
     }, 1000);
-
-    let marker;
-    '@foreach($data_persons as $value)'
-    if('{{ $value->ubicacion }}' != '0'){
-    ubications = '{{ $value->ubicacion }}'.split(',');
-    if ('{{$value->status}}' == 'ENTREGADO') {
-        var valueIcon = new L.Icon({
-            iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-green.png',
-            shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
-    } else if ('{{$value->status}}' == null || '{{$value->status}}' == '') {
-        
-        var valueIcon = new L.Icon({
-            iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-red.png',
-            shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
-    } else if ('{{$value->status}}' == 'PENDIENTE-PRODUCTO') {
-        var valueIcon = new L.Icon({
-            iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-orange.png',
-            shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
-    }
-
-    
-
-        marker = new L.Marker(ubications, {
-        draggable: false,
-        icon: valueIcon
-    });
-
-    mymap.addLayer(marker);
-    nombre = '{{ $value->nombre." ".$value->primer_ap. " ".$value->segundo_ap }}';
-
-    if('{{$value->status}}' == null || '{{$value->status}}' == ''){
-        marker.bindPopup('<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
-        '<span class="my-div-span"><b>Nombre: </b>' + nombre + '<br>' +
-        '<b>CI: </b>{{ $value->ci }}<br>' +
-        '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
-        '<b>Rubro: </b>{{ $value->nombre_rubro }}<br>' +
-        '<b>Tipo: </b>{{ $value->tipo }}<br>' +
-        '<b>Estado:  SIN ENTREGAR</b><br>' +
-        '</span>');
-    }else{
-        marker.bindPopup('<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
-        '<span class="my-div-span"><b>Nombre: </b>' + nombre + '<br>' +
-        '<b>CI: </b>{{ $value->ci }}<br>' +
-        '<b>Sindicato: </b>{{ $value->sindicato }}<br>' +
-        '<b>Rubro: </b>{{ $value->nombre_rubro }}<br>' +
-        '<b>Tipo: </b>{{ $value->tipo }}<br>' +
-        '<b>Estado:  {{ $value->status }}</b><br>' +
-        '</span>');
-    }
-
-    }
-    '@endforeach'
 
 
 
@@ -255,6 +185,7 @@ $(document).ready(function() {
             data: {
                 _token: "{{ csrf_token() }}",
                 criterio: $(this).val(),
+                sindicato: $('#filter-sindicato').val()
             },
             success: function(data) {
                 if (data.status == true) {
@@ -262,14 +193,12 @@ $(document).ready(function() {
                     $(".leaflet-marker-icon").remove();
                     $(".leaflet-marker-shadow").remove();
                     $(".leaflet-popup").remove();
-                    mymap.setView([-17.425460491975,-66.201554314586], 
-                    13,{
-                  'animate': true,
-                  'duration': 3});
+                    ubication = '';
                     $.each(data.response, function(index, value) {
-                        console.log(value);
+                        if(value.ubicacion != 0){
+                        ubication = value.ubicacion.split(',');
                         ubications = value.ubicacion.split(',');
-                        console.log(value.status);
+                        
                         if (value.status == 'ENTREGADO') {
                             var valueIcon = new L.Icon({
                                 iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-green.png',
@@ -330,8 +259,13 @@ $(document).ready(function() {
                             '<b>Estado:  '+value.status +'</b><br>' +
                             '</span>');
                         }
-                    
+                        }
+                      
                     });
+                    mymap.flyTo(ubication, 13, {
+                                animate: true,
+                                duration: 3
+                            });
                 }
             }
         });
@@ -341,7 +275,100 @@ $(document).ready(function() {
 
     //end counter filter
 
+$('#filter-sindicato').on('change', function() {
+    $('#filter-count').prop( "disabled", false );
+    $.ajax({
+            type: "POST",
+            url: "{{ route('personas.filter') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                criterio: $('#filter-count').val(),
+                sindicato: $(this).val()
+            },
+            success: function(data) {
+                if (data.status == true) {
 
+                    $(".leaflet-marker-icon").remove();
+                    $(".leaflet-marker-shadow").remove();
+                    $(".leaflet-popup").remove();
+                    ubication = '';
+                    $.each(data.response, function(index, value) {
+                        if(value.ubicacion != 0){
+                        ubication = value.ubicacion.split(',');
+                        ubications = value.ubicacion.split(',');
+                        
+                        if (value.status == 'ENTREGADO') {
+                            var valueIcon = new L.Icon({
+                                iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-green.png',
+                                shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                        } else if (value.status == '' || value.status == null) {
+                            var valueIcon = new L.Icon({
+                                iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-red.png',
+                                shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                        } else if (value.status == 'PENDIENTE-PRODUCTO') {
+                            var valueIcon = new L.Icon({
+                                iconUrl: '{{ asset("libreries") }}/img/marker-icon-2x-orange.png',
+                                shadowUrl: '{{ asset("libreries") }}/img/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                        }
+
+                        marker = new L.Marker(ubications, {
+                            draggable: false,
+                            icon: valueIcon
+                        });
+
+                        mymap.addLayer(marker);
+                        nombre = value.nombre+" "+ value.primer_ap +" "+ value.segundo_ap;
+
+                        if(value.status == '' || value.status == null ){
+                            marker.bindPopup(
+                            '<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
+                            '<span class="my-div-span"><b>Nombre: </b>' +
+                            nombre + '<br>' +
+                            '<b>CI: </b>'+ value.ci +'<br>' +
+                            '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
+                            '<b>Rubro: </b>'+value.nombre_rubro + '<br>' +
+                            '<b>Tipo: </b>'+ value.tipo +'<br>' +
+                            '<b>Estado:  SIN ENTREGAR</b><br>' +
+                            '</span>');
+                        }else{
+                            marker.bindPopup(
+                            '<div style="text-align: center;"><i class="fas fa-home fa-6x"></i></div>' +
+                            '<span class="my-div-span"><b>Nombre: </b>' +
+                            nombre + '<br>' +
+                            '<b>CI: </b>'+ value.ci +'<br>' +
+                            '<b>Sindicato: </b>'+ value.sindicato + '<br>' +
+                            '<b>Rubro: </b>'+value.nombre_rubro + '<br>' +
+                            '<b>Tipo: </b>'+ value.tipo +'<br>' +
+                            '<b>Estado:  '+value.status +'</b><br>' +
+                            '</span>');
+                        }
+                        }
+                      
+                    });
+                    mymap.flyTo(ubication, 13, {
+                                animate: true,
+                                duration: 3
+                            });
+                }
+            }
+        });
+
+});
 
 
 });
@@ -351,61 +378,31 @@ $(document).ready(function() {
 
 
 const config = {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
         labels: [
-            'Maica Sud',
-            'Maica Chica',
-            'Maica Arriba',
-            'Maica central',
-            'Maica Norte',
-            'Maica Milenario',
-            'Maica Kaspichaca',
-            'Maica San Isidro',
-            'Maica Quenamari',
-            'Maica Bolivia'
+            'Azirumarca',
+            'Campesino Norte',
+            'Maica',
+            'Pucara Grande',
+            'Valle Hermoso'
         ],
         datasets: [{
-            label: '# Entregas',
+            label: '# Entregados',
             data: [
-                '{{ $data_count->maica_sud }}',
-                '{{ $data_count->maica_chica }}',
-                '{{ $data_count->maica_arriba }}',
-                '{{ $data_count->maica_central }}',
-                '{{ $data_count->maica_norte }}',
-                '{{ $data_count->maica_milenario }}',
-                '{{ $data_count->maica_kaspichaca }}',
-                '{{ $data_count->maica_san_isidro }}',
-                '{{ $data_count->maica_quenamari }}',
-                '{{ $data_count->maica_bolivia }}',
+                '{{ $data_count->azirumarca }}',
+                '{{ $data_count->campesino_norte }}',
+                '{{ $data_count->maica }}',
+                '{{ $data_count->pucara_grande }}',
+                '{{ $data_count->valle_hermoso }}',
             ],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(171, 235, 198, 0.2)',
-                'rgba(234, 237, 237, 0.2)',
-                'rgba(212, 172, 13, 0.2)',
-                'rgba(135, 54, 0, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(171, 235, 198, 1)',
-                'rgba(234, 237, 237, 1)',
-                'rgba(212, 172, 13, 1)',
-                'rgba(135, 54, 0, 1)',
-                'rgba(255, 159, 64, 1)'
-
-            ],
-            borderWidth: 1
+                'rgb(255, 99, 132)',
+                'rgb(75, 192, 192)',
+                'rgb(255, 205, 86)',
+                'rgb(201, 203, 207)',
+                'rgb(54, 162, 235)'
+            ]
         }]
     },
     options: {
