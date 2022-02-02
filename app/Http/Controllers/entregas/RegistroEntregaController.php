@@ -128,10 +128,11 @@ class RegistroEntregaController extends Controller{
 					$producto->id_usuario = Auth::id();
 					$producto->id_registro = $registro->id;
 					$producto->id_producto = $value;
+					
 					if($value == 2){
-						$registro->cantidad_producto_entregado = 4;
+						$producto->cantidad_producto_entregado = 4;
 					}else if($value == 3){
-						$registro->cantidad_producto_entregado = 2;
+						$producto->cantidad_producto_entregado = 2;
 					}
 					 
 					$producto->save();
@@ -143,8 +144,7 @@ class RegistroEntregaController extends Controller{
 					'response'=> 'Registro exitoso!',
 					'entregados' => $data->total_entregados,
 					'pendientes' => $data->total_pendientes,
-					'pendientes_producto' => $data->total_pendientes_producto,
-					'observado' => $data->total_observados
+					'pendientes_producto' => $data->total_pendientes_producto
 				 ],200);
 			}else{
 				return response([
@@ -236,6 +236,11 @@ class RegistroEntregaController extends Controller{
 					$producto->id_usuario = Auth::id();
 					$producto->id_registro = $registro_entrega->id;
 					$producto->id_producto = $value;
+					if($value == 2){
+						$producto->cantidad_producto_entregado = 4;
+					}else if($value == 3){
+						$producto->cantidad_producto_entregado = 2;
+					}
 					$producto->save();
 				}
 
@@ -257,8 +262,7 @@ class RegistroEntregaController extends Controller{
 						'response'=> 'Registro exitoso!',
 						'entregados' => $data->total_entregados,
 						'pendientes' => $data->total_pendientes,
-						'pendientes_producto' => $data->total_pendientes_producto,
-						'observado' => $data->total_observados
+						'pendientes_producto' => $data->total_pendientes_producto
 							 ],200);
 
 			}else{
@@ -268,6 +272,11 @@ class RegistroEntregaController extends Controller{
 					$producto->id_usuario = Auth::id();
 					$producto->id_registro = $registro_entrega->id;
 					$producto->id_producto = $value;
+					if($value == 2){
+						$producto->cantidad_producto_entregado = 4;
+					}else if($value == 3){
+						$producto->cantidad_producto_entregado = 2;
+					}
 					$producto->save();
 				}
 
@@ -284,8 +293,7 @@ class RegistroEntregaController extends Controller{
 						'response'=> 'Registro exitoso!',
 						'entregados' => $data->total_entregados,
 						'pendientes' => $data->total_pendientes,
-						'pendientes_producto' => $data->total_pendientes_producto,
-						'observado' => $data->total_observados
+						'pendientes_producto' => $data->total_pendientes_producto
 							 ],200);
 
 			}
