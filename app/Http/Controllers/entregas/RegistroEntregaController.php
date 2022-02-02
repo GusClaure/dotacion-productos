@@ -128,6 +128,12 @@ class RegistroEntregaController extends Controller{
 					$producto->id_usuario = Auth::id();
 					$producto->id_registro = $registro->id;
 					$producto->id_producto = $value;
+					if($value == 2){
+						$registro->cantidad_producto_entregado = 4;
+					}else if($value == 3){
+						$registro->cantidad_producto_entregado = 2;
+					}
+					 
 					$producto->save();
 				}
 
