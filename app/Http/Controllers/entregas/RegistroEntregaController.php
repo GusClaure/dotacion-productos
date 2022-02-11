@@ -438,12 +438,12 @@ class RegistroEntregaController extends Controller{
 
 			return response([
 				'status'=> true,
-				'response'=> 'operacion true'
+				'response'=> 'registro '.$request->id_persona
 			 ],201);
 		}else{
 			return response([
 				'status'=> false,
-				'message'=> 'la persona con el id '.$request->id_persona. 'ya fue registrado'
+				'message'=> 'la persona con el id '.$request->id_persona. ' ya fue registrado'
 			 ],401);
 		}
 
@@ -459,7 +459,7 @@ class RegistroEntregaController extends Controller{
             'id_producto' => 'required',
             'fecha_entrega' => 'required',
 			'status' => 'required',
-			'uuid_registro' => 'required'
+			//'uuid_registro' => 'required'
         ]);
         
         if ($valid->fails()) {
@@ -469,12 +469,12 @@ class RegistroEntregaController extends Controller{
             );
         }
 
-		
-         
-		$RegistroEntrega = RegistroEntrega::select()
-					->where(['uuid' => $request->uuid_registro])
-					->first();
-
+	
+			$RegistroEntrega = RegistroEntrega::select()
+			->where(['id' => $request->id])
+			->first();
+			
+		 
 					
 		if($RegistroEntrega){
 			$data = new EntregaProducto();
@@ -501,7 +501,7 @@ class RegistroEntregaController extends Controller{
 		}else{
 			return response([
 				'status'=> false,
-				'message'=> 'la persona con el uuid '.$request->uuid_registro. 'ya no se encuentra registrado'
+				'message'=> 'la persona con el uuid '.$request->id. 'ya no se encuentra registrado'
 			 ],401);
 		}
 
