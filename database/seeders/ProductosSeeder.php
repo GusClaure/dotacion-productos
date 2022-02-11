@@ -32,6 +32,7 @@ class ProductosSeeder extends Seeder
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
+        
         Producto::create([
             'nombre_producto'  =>  'Suplemento Mineral para Ganado Vacuno',
             'cantidad'  =>  '10.417,00',
