@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\producto;
+use App\Models\Producto;
 use Illuminate\Database\Seeder;
 
 class ProductosSeeder extends Seeder
@@ -14,31 +14,31 @@ class ProductosSeeder extends Seeder
      */
     public function run()
     {
-        producto::create([
+        Producto::create([
             'nombre_producto'  =>  'Alimento Balanceado para Ganado Vacuno Lechero',
             'cantidad'  =>  '15.385,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
-        producto::create([
+        Producto::create([
             'nombre_producto'  =>  'Alimento Balanceado para Ganado Vacuno de Engorde',
             'cantidad'  =>  '15.385,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
-        producto::create([
+        Producto::create([
             'nombre_producto'  =>  'Promotor (vitamínico y mineral) de producción láctea para ganado vacuno',
             'cantidad'  =>  '10.274,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
-        producto::create([
+        Producto::create([
             'nombre_producto'  =>  'Suplemento Mineral para Ganado Vacuno',
             'cantidad'  =>  '10.417,00',
             'unidad' => 'Bolsas 46 kg.'
         ]);
 
-        producto::create([
+        Producto::create([
             'nombre_producto'  =>  'Fertilizante Urea 46% N granulado',
             'cantidad'  =>  '6.128,00',
             'unidad' =>'Bolsas 50 kg.'
