@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
+use Illuminate\Support\Facades\Validator;
 
 
 class RegistroEntregaController extends Controller{
@@ -127,6 +127,7 @@ class RegistroEntregaController extends Controller{
 					$producto = new EntregaProducto();
 					$producto->id_usuario = Auth::id();
 					$producto->id_registro = $registro->id;
+					$producto->uuid_registro = $registro->uuid;
 					$producto->id_producto = $value;
 					
 					if($value == 2){
@@ -236,6 +237,7 @@ class RegistroEntregaController extends Controller{
 					$producto->id_usuario = Auth::id();
 					$producto->id_registro = $registro_entrega->id;
 					$producto->id_producto = $value;
+					$producto->uuid_registro = $registro_entrega->uuid;
 					if($value == 2){
 						$producto->cantidad_producto_entregado = 4;
 					}else if($value == 3){
@@ -400,6 +402,109 @@ class RegistroEntregaController extends Controller{
 				'message'=> 'El registro no existe por favor recargue la pagina'
 			 ],200);
 		}
+
+	}
+
+
+	public function llenadoDatosRegistrosEntregas(Request $request){
+		
+		$valid = Validator::make($request->all(), [
+            'uuid' => 'required',
+            'id_persona' => 'required',
+            'fecha_registro' => 'required',
+            'status' => 'required'
+        ]);
+        
+        if ($valid->fails()) {
+            return response()->json(
+                ['error' => $valid->errors()],
+                422
+            );
+        }
+
+         
+		$person = RegistroEntrega::select()
+					->where(['id_persona' => $request->id_persona])
+					->first();
+
+		if(!$person){
+			$data = new RegistroEntrega();
+			$data->uuid = $request->uuid;
+			$data->id_persona = $request->id_persona;
+			$data->observacion = $request->observacion;
+			$data->fecha_registro = $request->fecha_registro;
+			$data->status = $request->status;
+			$data->save();
+
+			return response([
+				'status'=> true,
+				'response'=> 'operacion true'
+			 ],201);
+		}else{
+			return response([
+				'status'=> false,
+				'message'=> 'la persona con el id '.$request->id_persona. 'ya fue registrado'
+			 ],401);
+		}
+
+
+	}
+
+
+	public function llenadoDatosEntregaProductos(Request $request){
+		
+		$valid = Validator::make($request->all(), [
+            'id_usuario' => 'required',
+            'id_registro' => 'required',
+            'id_producto' => 'required',
+            'fecha_entrega' => 'required',
+			'status' => 'required',
+			'uuid_registro' => 'required'
+        ]);
+        
+        if ($valid->fails()) {
+            return response()->json(
+                ['error' => $valid->errors()],
+                422
+            );
+        }
+
+		
+         
+		$RegistroEntrega = RegistroEntrega::select()
+					->where(['uuid' => $request->uuid_registro])
+					->first();
+
+					
+		if($RegistroEntrega){
+			$data = new EntregaProducto();
+			$data->id_usuario = $request->id_usuario;
+			$data->id_registro = $RegistroEntrega->id;
+			$data->id_producto = $request->id_producto;
+			if($request->id_producto == 2){
+				$data->cantidad_producto_entregado = 4;
+			}else if($request->id_producto == 3){
+				$data->cantidad_producto_entregado = 2;
+			}
+			$data->fecha_entrega = $request->fecha_entrega;
+			$data->fecha_anulacion = $request->fecha_anulacion;
+			$data->usuario_anulo = $request->usuario_anulo;
+			$data->status = $request->status;
+			$data->uuid_registro = $RegistroEntrega->uuid;
+			$data->save();
+
+		
+			return response([
+				'status'=> true,
+				'response'=> 'registrado'
+			 ],201);
+		}else{
+			return response([
+				'status'=> false,
+				'message'=> 'la persona con el uuid '.$request->uuid_registro. 'ya no se encuentra registrado'
+			 ],401);
+		}
+
 
 	}
 

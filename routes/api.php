@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('personas/new-register', 'App\Http\Controllers\personas\PersonaController@saveNewRegister');
-
-
+Route::post('registro-entrega/registro', 'App\Http\Controllers\entregas\RegistroEntregaController@llenadoDatosRegistrosEntregas');
+Route::post('entrega-productos/registro', 'App\Http\Controllers\entregas\RegistroEntregaController@llenadoDatosEntregaProductos');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -162,17 +162,6 @@ class PersonaController extends Controller{
 
 
 
-	public function updateEntregaProducto(Request $request){
-		$this->validate($request, [
-			'id_persona' => 'required'
-		], [
-			'required' => ':attribute es requerido!'
-		]);		
-
-		return 'dwada';
-	}
-
-
 	public function exporCsv(){
 
 		     $fileName_csv_registro_entradas = 'export_user_'.Auth::id().'_table_registro_entregas_'.date('Y_m_d').'.csv';
@@ -243,7 +232,7 @@ class PersonaController extends Controller{
 
 	private function generateCSVTableEntregasProducto($fileName_csv){
 		$registro_entregas = EntregaProducto::all();
-		$columns = ['id', 'id_usuario', 'id_registro', 'id_producto', 'fecha_entrega', 'fecha_anulacion', 'usuario_anulo', 'status'];
+		$columns = ['id', 'id_usuario', 'id_registro', 'id_producto', 'cantidad_producto_entregado', 'fecha_entrega', 'fecha_anulacion', 'usuario_anulo', 'status', 'uuid_registro'];
 		$delimiter = ';';
 		$callback = function() use($registro_entregas, $columns, $fileName_csv, $delimiter) {
 			$file = fopen(public_path('archives_csv/').$fileName_csv, 'w');
@@ -255,10 +244,12 @@ class PersonaController extends Controller{
 			    $row['id_usuario'] = $value->id_usuario;
 			    $row['id_registro'] = $value->id_registro;
 			    $row['id_producto'] = $value->id_producto;
+				$row['cantidad_producto_entregado'] = $value->cantidad_producto_entregado;
 			    $row['fecha_entrega'] = $value->fecha_entrega;
 				$row['fecha_anulacion'] = $value->fecha_anulacion;
 				$row['usuario_anulo'] = $value->fecha_anulacion;
 				$row['status'] = $value->status;
+				$row['uuid_registro'] = $value->uuid_registro;
 				fputcsv($file, $row, $delimiter);
 			}
 			fclose($file);
