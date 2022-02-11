@@ -389,6 +389,7 @@ class RegistroEntregaController extends Controller{
 						'usuario_anulo' => Auth::id()
 					]);
 
+					
 					return response([
 						'status'=> true,
 						'response'=> 'Se anulo el registro Nro. '
