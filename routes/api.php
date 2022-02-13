@@ -19,6 +19,10 @@ Route::post('personas/new-register', 'App\Http\Controllers\personas\PersonaContr
 Route::post('registro-entrega/registro', 'App\Http\Controllers\entregas\RegistroEntregaController@llenadoDatosRegistrosEntregas');
 Route::post('entrega-productos/registro', 'App\Http\Controllers\entregas\RegistroEntregaController@llenadoDatosEntregaProductos');
 
+Route::get('entrega-productos/update', 'App\Http\Controllers\entregas\RegistroEntregaController@updateTableProduct');
+
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

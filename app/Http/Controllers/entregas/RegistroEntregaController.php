@@ -509,5 +509,20 @@ class RegistroEntregaController extends Controller{
 
 	}
 
+	public function updateTableProduct(){
+		
+		$registro = RegistroEntrega::all();
+
+		foreach($registro as $value){
+			
+			EntregaProducto::where(['id_registro' => $value->id])
+			->update(['uuid_registro' => $value->uuid]);
+			
+		}
+		
+		return 'echo';
+
+	}
+
 
 }

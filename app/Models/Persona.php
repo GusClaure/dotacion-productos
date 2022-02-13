@@ -46,7 +46,7 @@ class Persona extends Model
         $data = DB::select("select
         count(1) as total,
         count(1) filter (where registros_entregas.status = :status_entregado) as total_entregados,
-        count(1) filter (where registros_entregas.status is null) as total_pendientes,
+        count(1) filter (where registros_entregas.status is null or registros_entregas.status = 'ANULADO') as total_pendientes,
         count(1) filter (where registros_entregas.status = 'PENDIENTE-PRODUCTO') as total_pendientes_producto,
         count(1) filter (where sub_central ilike '%Valle Hermoso%' and registros_entregas.status = 'ENTREGADO') as valle_hermoso,
         count(1) filter (where sub_central ilike '%Pucara grande%' and registros_entregas.status = 'ENTREGADO') as pucara_grande,
