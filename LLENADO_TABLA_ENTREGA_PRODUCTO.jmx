@@ -21,7 +21,7 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">625</stringProp>
+          <stringProp name="LoopController.loops">40000000</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
@@ -51,10 +51,10 @@
         </CounterConfig>
         <hashTree/>
         <com.blazemeter.jmeter.RandomCSVDataSetConfig guiclass="com.blazemeter.jmeter.RandomCSVDataSetConfigGui" testclass="com.blazemeter.jmeter.RandomCSVDataSetConfig" testname="DATA_ENTREGA_PRODUCTOS" enabled="true">
-          <stringProp name="filename">C:\Users\claure\Documents\laravel\LARAVEL\backup\export_user_5_2022_02_07 (1)\export_user_5_table_entregas_producto_2022_02_07.csv</stringProp>
+          <stringProp name="filename">C:\Users\claure\Documents\laravel\LARAVEL\backup_agropecuarios\11-2-22\124-102_echo\este_si\export_user_1_table_entregas_producto_2022_02_13.csv</stringProp>
           <stringProp name="fileEncoding">UTF-8</stringProp>
           <stringProp name="delimiter">;</stringProp>
-          <stringProp name="variableNames">id,id_usuario,id_registro,id_producto,fecha_entrega,fecha_anulacion,usuario_anulo,status,uuid_registro</stringProp>
+          <stringProp name="variableNames">id,id_usuario,id_registro,id_producto,cantidad_producto_entregado,fecha_entrega,fecha_anulacion,usuario_anulo,status,uuid_registro</stringProp>
           <boolProp name="randomOrder">false</boolProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="rewindOnTheEndOfList">false</boolProp>
@@ -113,12 +113,12 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">status</stringProp>
               </elementProp>
-              <elementProp name="id" elementType="HTTPArgument">
+              <elementProp name="uuid_registro" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">${id}</stringProp>
+                <stringProp name="Argument.value">${uuid_registro}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name">id</stringProp>
+                <stringProp name="Argument.name">uuid_registro</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>

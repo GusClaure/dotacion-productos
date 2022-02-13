@@ -247,7 +247,7 @@ class PersonaController extends Controller{
 				$row['cantidad_producto_entregado'] = $value->cantidad_producto_entregado;
 			    $row['fecha_entrega'] = $value->fecha_entrega;
 				$row['fecha_anulacion'] = $value->fecha_anulacion;
-				$row['usuario_anulo'] = $value->fecha_anulacion;
+				$row['usuario_anulo'] = $value->usuario_anulo;
 				$row['status'] = $value->status;
 				$row['uuid_registro'] = $value->uuid_registro;
 				fputcsv($file, $row, $delimiter);
