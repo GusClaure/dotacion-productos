@@ -21,6 +21,9 @@ Route::post('entrega-productos/registro', 'App\Http\Controllers\entregas\Registr
 
 Route::get('entrega-productos/update', 'App\Http\Controllers\entregas\RegistroEntregaController@updateTableProduct');
 
+Route::post('find-person', 'App\Http\Controllers\entregas\RegistroEntregaController@searchPerson');
+
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

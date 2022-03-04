@@ -526,4 +526,35 @@ class RegistroEntregaController extends Controller{
 	}
 
 
+
+	public function searchPerson(Request $request){
+
+		
+		$person = Persona::select()
+		->where(['ci' => trim($request->ci)])
+		->first();
+
+		if($person){
+
+
+			return response([
+				'status'=> true,
+				'response'=> $person
+			 ],200);
+
+		}else{
+			DB::table('lista')->insert([
+				'ci' => $request->ci,
+				'nombre' => trim($request->nombre)
+			]);
+
+			return response([
+				'status'=> false,
+				'message'=> 'La persona con el ci: '. $ci. ' no existe o no encotro'
+			 ],404);
+		}
+
+	}
+
+
 }
