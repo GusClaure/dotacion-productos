@@ -94,7 +94,7 @@
 
 <script>
 $(document).ready(function() {
-
+    
     $('#productos-select').select2({
         placeholder: 'Seleccione las opciones',
         allowClear: true,
@@ -321,7 +321,7 @@ $(document).ready(function() {
                 "data": "expedido"
             },
             {
-                "data": "nro_cel..toString()"
+                "data": "nro_cel.toString()"
             },
             {
                 "data": "distrito"

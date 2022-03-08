@@ -371,6 +371,7 @@ class RegistroEntregaController extends Controller{
 	}
 
 
+
 	public function anularEntregaProducto(Request $request){
 
 		$find_entrega = RegistroEntrega::select()
@@ -555,6 +556,73 @@ class RegistroEntregaController extends Controller{
 		}
 
 	}
+
+
+	public function checkQrEntrega($uuid){
+
+		if (!is_string($uuid) || (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1)) {
+			return response([
+				'status'=> false,
+				'message'=> 'El uuid '. $uuid. ' no existe en nuentra base de datos'
+			 ],200);
+		}
+
+		$find_data = RegistroEntrega::select()
+		->leftjoin('entregas_productos', 'entregas_productos.id_registro', '=', 'registros_entregas.id')
+		->leftjoin('personas', 'personas.id', '=', 'registros_entregas.id_persona')
+		->leftjoin('productos', 'productos.id', '=', 'entregas_productos.id_producto')
+		->leftjoin('rubros', 'rubros.id', '=', 'personas.rubro_id')
+		->where(['registros_entregas.uuid' => $uuid, 'entregas_productos.status' => 'ENTREGADO'])
+		->get();
+	
+	
+		
+		$mes = '';
+		if(date('m') == '01'){
+			$mes = 'Enero';
+		}else if(date('m') == '02'){
+			$mes = 'Febrero';
+		}else if(date('m') == '03'){
+			$mes = 'Marzo';
+		}else if(date('m') == '04'){
+			$mes = 'Abril';
+		}else if(date('m') == '05'){
+			$mes = 'Mayo';
+		}else if(date('m') == '06'){
+			$mes = 'Junio';
+		}else if(date('m') == '07'){
+			$mes = 'Julio';
+		}else if(date('m') == '08'){
+			$mes = 'Agosto';
+		}else if(date('m') == '09'){
+			$mes = 'Septiembre';
+		}else if(date('m') == '10'){
+			$mes = 'Octubre';
+		}else if(date('m') == '11'){
+			$mes = 'Noviembre';
+		}else if(date('m') == '12'){
+			$mes = 'Diciembre';
+		}
+
+		try {
+
+			$find_data[0]->id;
+		  
+			return response([
+				'status'=> true,
+				'response'=> $find_data
+			 ],200);
+
+		  } catch (\Exception $e) {
+		  
+			return response([
+				'status'=> false,
+				'message'=> 'No existe ningun dato'
+			 ],200);
+		  }	
+	}
+
+
 
 
 }

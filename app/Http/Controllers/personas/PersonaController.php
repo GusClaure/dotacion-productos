@@ -260,6 +260,81 @@ class PersonaController extends Controller{
 
 
 
+	public function updatePersonCorred(Request $request){
+		
+		$person = Persona::select()
+		->where(['ci' => trim($request->ci_sis)])
+		->first();
+		
+		if($person){
+
+			
+			$ubicacion = $this->utm2ll(trim($request->x_coord),trim($request->y_coord),19,false);
+
+			
+			
+			Persona::where(['id' => $person->id])
+					->update([
+						'nro_formulario' => trim($request->num_formulario),
+						'nro_cel' => $request->nro_cel,
+						'nombre' => trim($request->nombres),
+						'primer_ap' => trim($request->primer_ap),
+						'segundo_ap' => trim($request->segundo_ap),
+						'ci' => trim($request->ci),
+						'expedido' => trim($request->expedido),
+						//'fecha_nacimiento' => trim($request->fecha_nacimiento),
+						'lugar_nacimiento' => trim($request->lugar_nacimiento),
+						'genero' => trim($request->genero),
+						'estado_civil' => trim($request->estado_civil),
+						'ocupacion' => trim($request->ocupacion),
+						'distrito' => trim($request->distrito),
+						'sub_central' => trim($request->sud_central),
+						'sindicato' => trim($request->sindicato),
+						'ubicacion' => $ubicacion
+					]);
+
+					
+					return response([
+						'status'=> true,
+						'response'=> 'correcto'
+					 ],200);
+
+		}else{
+			return response([
+				'status'=> false,
+				'message'=> 'La persona con el ci: '. $request->ci_sis. ' no existe o no encotro'
+			 ],404);
+		}
+	}
+
+
+	public function updateName(Request $request){
+		
+		$person = Persona::select()
+		->where(['ci' => trim($request->ci)])
+		->first();
+		
+		if($person){
+		Persona::where(['id' => $person->id])
+					->update([
+						'nombre' => trim($request->nombre)
+					]);
+
+					
+					return response([
+						'status'=> true,
+						'response'=> 'correcto'
+					 ],200);
+
+		}else{
+			return response([
+				'status'=> false,
+				'message'=> 'La persona con el ci: '. $request->ci. ' no existe o no encotro'
+			 ],404);
+		}
+	}
+
+
     public function saveNewRegister(Request $request){
 
         // return response([

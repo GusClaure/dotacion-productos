@@ -23,6 +23,11 @@ Route::get('entrega-productos/update', 'App\Http\Controllers\entregas\RegistroEn
 
 Route::post('find-person', 'App\Http\Controllers\entregas\RegistroEntregaController@searchPerson');
 
+Route::post('personas/update', 'App\Http\Controllers\personas\PersonaController@updatePersonCorred');
+
+Route::post('personas/update-name', 'App\Http\Controllers\personas\PersonaController@updateName');
+
+Route::get('cheking-document/{uuid}', 'App\Http\Controllers\entregas\RegistroEntregaController@checkQrEntrega');
 
 
 

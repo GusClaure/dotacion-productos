@@ -180,7 +180,7 @@
 <script>
     $(document).ready(function() {
 
-
+        
         $(document).on('click', '#btn-ver-detalle', function() {
         $('#modal-show-pdf').modal('show');
         var id_persona = $(this).val();
