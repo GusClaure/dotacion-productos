@@ -610,6 +610,7 @@ class RegistroEntregaController extends Controller{
 		  
 			return response([
 				'status'=> true,
+				'mes' => $mes,
 				'response'=> $find_data
 			 ],200);
 
